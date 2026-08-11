@@ -16,6 +16,7 @@
 # next.js
 /.next/
 /out/
+dist/
 
 # production
 /build
@@ -39,3 +40,20 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Operating System files
+.DS_Store
+Thumbs.dbss
+
+# Prisma
+/prisma/migrations/*_*/
+!/prisma/migrations/
+dev.db
+dev.db-journal
+/app/generated/prisma
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
