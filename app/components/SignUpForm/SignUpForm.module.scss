@@ -1,0 +1,74 @@
+.signupForm {
+
+    .titleBlock {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+
+        .title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--foreground);
+            margin: 20px 0 10px;
+        }
+
+        .description {
+            font-size: 14px;
+            color: var(--foreground);
+            margin: 0 0 20px;
+        }
+    }
+
+    .form {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        flex-direction: column;
+
+        label {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--foreground);
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-bottom: 20px;
+        }
+
+        .passwordText {
+            font-size: 12px;
+            color: var(--foreground);
+            margin: 0 0 20px auto;
+
+        }
+
+        .submitBtn {
+            background: var(--foreground);
+            font-size: 14px;
+            color: var(--background);
+            padding: 10px 0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .text {
+            font-size: 14px;
+            color: var(--foreground);
+            margin: 0 auto 20px;
+        }
+
+        .text .boldText {
+            color: var(--foreground);
+            font-weight: 600;
+        }
+    }
+
+}
