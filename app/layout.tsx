@@ -1,5 +1,11 @@
 import "./globals.scss";
-import ThemeProvider from "./components/ThemeProvider/ThemeProvider";
+import ThemeProvider from "@/app/components/ThemeProvider/ThemeProvider";
+import Header from "@/app/components/Header/Header";
+import { Inter } from "next/font/google";
+
+const inter = Inter({
+  subsets: ["latin"],
+});
 
 export default function RootLayout({
   children,
@@ -8,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className={inter.className}>
         <ThemeProvider>
           {children}
         </ThemeProvider>

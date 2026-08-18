@@ -1,0 +1,14 @@
+// .adminBody {
+//     display: flex;
+// }
+
+.mainContent {
+    padding-top: 20px;
+    margin-left: 0;
+    padding: 20px 15px;
+
+    @media (min-width: 769px) {
+        margin-left: 240px;
+        padding: 60px 30px 30px;
+    }
+}

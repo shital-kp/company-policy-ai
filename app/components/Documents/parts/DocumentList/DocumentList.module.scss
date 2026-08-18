@@ -1,0 +1,188 @@
+.documentList {
+  margin-bottom: 30px;
+
+  .tableWrapper {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+
+  .table {
+    width: 100%;
+    min-width: 700px;
+    border-collapse: collapse;
+    background: var(--surface);
+    color: var(--text-primary);
+  }
+
+  .table th,
+  .table td {
+    padding: 14px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .table th {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--surface-secondary);
+  }
+
+  .table td {
+    font-size: 14px;
+  }
+
+  .table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .table tbody tr:hover {
+    background: var(--surface-hover);
+  }
+
+  .documentName {
+    font-weight: 500;
+  }
+
+  .status {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .deleteButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+    color: var(--text-secondary);
+  }
+
+  .deleteButton:hover {
+    background: var(--surface-hover);
+  }
+
+  .emptyState {
+    padding: 40px 20px !important;
+    text-align: center !important;
+    color: var(--text-secondary);
+  }
+}
+
+
+.listHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+
+  h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  span {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+}
+
+// .table {
+//   overflow: hidden;
+//   border: 1px solid var(--border);
+//   border-radius: 10px;
+//   background: var(--surface);
+// }
+
+// .tableHeader,
+// .documentRow {
+//   display: grid;
+//   grid-template-columns: 2fr 0.8fr 1.1fr 0.8fr 60px;
+//   align-items: center;
+// }
+
+// .tableHeader {
+//   min-height: 48px;
+//   padding: 0 20px;
+//   background: var(--surface-hover);
+//   border-bottom: 1px solid var(--border);
+//   font-size: 12px;
+//   font-weight: 600;
+//   color: var(--text-secondary);
+// }
+
+// .documentRow {
+//   min-height: 62px;
+//   padding: 0 20px;
+//   border-bottom: 1px solid var(--border);
+//   font-size: 14px;
+//   color: var(--text-primary);
+
+//   &:last-child {
+//     border-bottom: none;
+//   }
+
+//   &:hover {
+//     background: var(--surface-hover);
+//   }
+// }
+
+.status {
+  display: inline-flex;
+  width: fit-content;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: var(--success-background);
+  color: var(--success-text);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.emptyState {
+  padding: 40px 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.documentRow button {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 20px;
+  color: #6b7280;
+  cursor: pointer;
+
+  &:hover {
+    background: #f1f5f9;
+  }
+}
+
+.deleteButton {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+
+  &:hover {
+    background: #fef2f2;
+    color: var(--danger);
+  }
+}

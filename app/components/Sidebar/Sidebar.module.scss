@@ -1,0 +1,182 @@
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 280px;
+  height: 100vh;
+  z-index: 2000;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  color: var(--text-primary);
+  animation: slideIn 0.25s ease;
+}
+
+.sidebarTitle {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.closeButton {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 26px;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--surface-hover);
+  }
+}
+
+.sidebarDetails {
+  padding: 16px 10px;
+}
+
+.newChat,
+.documentManagement {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.newChat:hover,
+.documentManagement:hover {
+  background: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+.documentManagement.active {
+  background: var(--surface-hover);
+  color: var(--primary);
+}
+
+.profileAndToggle {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
+.profileAndToggle .themeToggleBtn {
+  background: #fff;
+  border: 1px solid var(--border);
+  padding: 12px 20px;
+
+  .togglePopup {
+    display: flex;
+    flex-direction: column;
+    gap: 20px 0;
+  }
+
+  .theme {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .signout {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    color: #000;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    background: none;
+
+    img {
+      filter: none;
+    }
+
+    &:hover {
+      color: var(--text-primary);
+    }
+  }
+}
+
+.userProfile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  justify-content: center;
+}
+
+.userDetails {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.userName {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+}
+
+.userEmail {
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@media (min-width: 769px) {
+  .sidebar {
+    width: 240px;
+
+    animation: none;
+  }
+
+  .sidebarTitle {
+    height: 64px;
+    padding: 0 20px;
+  }
+
+  .closeButton {
+    display: none;
+  }
+
+  .sidebarDetails {
+    padding: 20px 12px;
+  }
+}
