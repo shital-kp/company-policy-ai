@@ -1,6 +1,33 @@
 :root {
   --background: #ffffff;
   --foreground: #000000;
+  --surface: #ffffff;
+  --surface-hover: #f8fafc;
+  --border: #e5e7eb;
+  --text-primary: #171717;
+  --text-secondary: #6b7280;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --success-background: #ecfdf3;
+  --success-text: #15803d;
+  --danger: #dc2626;
+  --input-background: #ffffff;
+}
+
+[data-theme="dark"] {
+  --background: #000000;
+  --foreground: #ffffff;
+  --surface: #171717;
+  --surface-hover: #262626;
+  --border: #333333;
+  --text-primary: #ffffff;
+  --text-secondary: #a1a1aa;
+  --primary: #60a5fa;
+  --primary-hover: #93c5fd;
+  --success-background: #064e3b;
+  --success-text: #6ee7b7;
+  --danger: #f87171;
+  --input-background: #171717;
 }
 
 html {
@@ -13,20 +40,19 @@ body {
   overflow-x: hidden;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-[data-theme="dark"] {
-  --background: #000000;
-  --foreground: #ffffff;
-}
-
 [data-theme="dark"] .companyLogo {
   filter: brightness(0) invert(1);
+}
+
+[data-theme="dark"] img {
+  filter: brightness(0) invert(1);
+}
+
+.container {
+  width: 100%;
+  // max-width: 1200px;
+  margin: 0 auto;
+  // padding: 15px 0 0;
 }
 
 body {
@@ -38,6 +64,10 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+main {
+  height: 100vh;
 }
 
 * {

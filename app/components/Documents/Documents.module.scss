@@ -1,0 +1,46 @@
+.documents {
+  min-height: calc(100vh - 56px);
+  padding: 0;
+  background: var(--background);
+  color: var(--text-primary);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.documentsHeader {
+  margin-bottom: 20px;
+
+  .title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  p {
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+}
+
+@media (min-width: 769px) {
+  .documents {
+    min-height: calc(100vh - 64px);
+
+    padding: 32px 40px;
+  }
+
+  .documentsHeader {
+    margin-bottom: 28px;
+
+    h1 {
+      font-size: 28px;
+    }
+
+    p {
+      font-size: 14px;
+    }
+  }
+}

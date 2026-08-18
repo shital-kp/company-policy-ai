@@ -6,7 +6,7 @@ import styles from "./page.module.scss";
 
 export default function SignInPage() {
     return (
-        <div className={styles.signInPage}>
+        <div className={`container ${styles.signInPage}`}>
             <LogInForm />
         </div>
     );
