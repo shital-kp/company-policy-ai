@@ -1,35 +1,48 @@
 "use client";
-
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-
 import styles from "./LoginForm.module.scss";
 import logo from "@/public/companyLogo.png";
 import ThemeToggle from "../ThemeToggle/ThemeToggle";
+import ForgotPassword from "@/app/components/ForgetPassword/ForgetPassword";
 
 const LogInForm: React.FC = () => {
   const router = useRouter();
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  const handleSubmit = (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
 
-    const formData = new FormData(event.currentTarget);
+    setError("");
 
-    const username = formData.get("username") as string;
-    const password = formData.get("password") as string;
+    const trimmedEmail = email.trim();
 
-    // Temporary frontend login
-    // Backend authentication will be added later
-    if (username && password) {
-      const user = {
-        name: username,
-        email: username,
-      };
-
-      localStorage.setItem("user", JSON.stringify(user));
-
-      router.push("/");
+    if (!trimmedEmail) {
+      setError("Email is required.");
+      return;
     }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(trimmedEmail)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    setLoading(true);
+
+    // Temporary frontend testing
+    setTimeout(() => {
+      setLoading(false);
+      setSuccess(true);
+    }, 1500);
   };
 
   return (
@@ -61,9 +74,15 @@ const LogInForm: React.FC = () => {
         </label>
 
         <input
-          type="text"
-          id="username"
-          name="username"
+          type="email"
+          id="forgot-email"
+          value={email}
+          onChange={(event) => {
+            setEmail(event.target.value);
+            setError("");
+          }}
+          disabled={loading}
+          autoFocus
           required
         />
 
@@ -78,9 +97,13 @@ const LogInForm: React.FC = () => {
           required
         />
 
-        <p className={styles.passwordText}>
-          forgot password?
-        </p>
+        <button
+          type="button"
+          className={styles.passwordText}
+          onClick={() => setShowForgotPassword(true)}
+        >
+          Forgot password?
+        </button>
 
         <button
           type="submit"
@@ -99,6 +122,13 @@ const LogInForm: React.FC = () => {
           </a>
         </p>
       </form>
+
+      {/* Forgot Password Modal */}
+      {showForgotPassword && (
+        <ForgotPassword
+          onClose={() => setShowForgotPassword(false)}
+        />
+      )}
     </div>
   );
 };
