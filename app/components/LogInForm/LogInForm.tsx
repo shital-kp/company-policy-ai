@@ -3,46 +3,38 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./LoginForm.module.scss";
 import logo from "@/public/companyLogo.png";
-import ThemeToggle from "../ThemeToggle/ThemeToggle";
 import ForgotPassword from "@/app/components/ForgetPassword/ForgetPassword";
 
 const LogInForm: React.FC = () => {
   const router = useRouter();
 
-  const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] =
+    useState(false);
 
   const handleSubmit = (
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
 
-    setError("");
+    const formData = new FormData(event.currentTarget);
 
-    const trimmedEmail = email.trim();
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
 
-    if (!trimmedEmail) {
-      setError("Email is required.");
-      return;
+    // Temporary frontend login
+    if (email && password) {
+      const user = {
+        name: email,
+        email: email,
+      };
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(user)
+      );
+
+      router.push("/");
     }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!emailRegex.test(trimmedEmail)) {
-      setError("Please enter a valid email address.");
-      return;
-    }
-
-    setLoading(true);
-
-    // Temporary frontend testing
-    setTimeout(() => {
-      setLoading(false);
-      setSuccess(true);
-    }, 1500);
   };
 
   return (
@@ -69,23 +61,19 @@ const LogInForm: React.FC = () => {
         className={styles.form}
         onSubmit={handleSubmit}
       >
-        <label htmlFor="username">
-          Username
+        {/* Email */}
+        <label htmlFor="email">
+          Email
         </label>
 
         <input
           type="email"
-          id="forgot-email"
-          value={email}
-          onChange={(event) => {
-            setEmail(event.target.value);
-            setError("");
-          }}
-          disabled={loading}
-          autoFocus
+          id="email"
+          name="email"
           required
         />
 
+        {/* Password */}
         <label htmlFor="password">
           Password
         </label>
@@ -97,6 +85,7 @@ const LogInForm: React.FC = () => {
           required
         />
 
+        {/* Forgot Password */}
         <button
           type="button"
           className={styles.passwordText}
@@ -105,6 +94,7 @@ const LogInForm: React.FC = () => {
           Forgot password?
         </button>
 
+        {/* Sign In */}
         <button
           type="submit"
           className={styles.submitBtn}
@@ -112,6 +102,7 @@ const LogInForm: React.FC = () => {
           Sign In
         </button>
 
+        {/* Sign Up */}
         <p className={styles.text}>
           Don't have an account?{" "}
           <a
