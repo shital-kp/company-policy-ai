@@ -71,4 +71,26 @@
     }
   }
 
+  .passwordText {
+    align-self: flex-end;
+
+    margin: 6px 0 15px;
+
+    padding: 0;
+
+    border: none;
+
+    background: transparent;
+
+    color: inherit;
+
+    font-size: 14px;
+
+    cursor: pointer;
+  }
+
+  .passwordText:hover {
+    text-decoration: underline;
+  }
+
 }
