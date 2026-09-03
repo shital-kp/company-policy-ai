@@ -8,6 +8,13 @@
   background: var(--surface);
   // border-bottom: 1px solid var(--border);
   color: var(--text-primary);
+
+  @media (min-width: 769px) {
+    position: fixed;
+    width: 100%;
+    z-index: 1111;
+    top: 0;
+  }
 }
 
 .sidebarBtn {

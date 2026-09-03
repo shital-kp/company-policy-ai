@@ -1,0 +1,61 @@
+.recentChat {
+  width: 100%;
+
+  .recentBtn {
+    padding: 11px 12px;
+    border-radius: 8px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    width: 100%;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    color: var(--text-secondary);
+    font-size: 14px;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+    }
+
+  }
+
+  .chatDetails {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    padding: 11px 12px;
+    height: 400px;
+    overflow: auto;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #6c7684;
+      border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  }
+
+  .chatDetails button {
+    border: none;
+    background: none;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+}

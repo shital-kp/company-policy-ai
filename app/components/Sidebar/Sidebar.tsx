@@ -6,6 +6,7 @@ import DocumentIcon from "@/public/document-icon.png";
 import profileIcon from "@/public/profile-icon.png";
 import ThemeToggle from "../ThemeToggle/ThemeToggle";
 import SignOutIcon from "@/public/log-out-icon.png";
+import RecentChats from "@/app/components/RecentChats/RecentChats";
 
 type SidebarProps = {
   onClose?: () => void;
@@ -57,6 +58,8 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
           <span>New Chat</span>
         </a>
 
+
+
         {/* Documents */}
         <div
           className={styles.documentManagement}
@@ -72,7 +75,10 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
           <a href="/admin">Documents</a>
         </div>
 
+        <RecentChats />
       </div>
+
+      
 
       <div className={styles.profileAndToggle}>
 

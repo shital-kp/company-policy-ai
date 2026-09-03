@@ -16,6 +16,12 @@ generator client {
 enum Role {
   EMPLOYEE
   HR_ADMIN
+} 
+
+enum DocumentStatus {
+  PROCESSING
+  READY
+  FAILED
 }
 
 model User {
@@ -32,9 +38,13 @@ model User {
 model Document {
   id          String          @id @default(uuid())
   title       String
+  fileName    String
   fileUrl     String
   fileType    String
+  fileSize    Int
   uploadedBy  String
+  fileHash    String          @unique
+  status      DocumentStatus  @default(PROCESSING)
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
   chunks      DocumentChunk[]
@@ -51,20 +61,26 @@ model DocumentChunk {
 }
 
 model Chat {
-  id        String    @id @default(uuid())
+  id        String        @id @default(cuid())
   userId    String
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  title     String    @default("New Conversation")
-  createdAt DateTime  @default(now())
-  messages  Message[]
+  title     String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  messages  ChatMessage[]
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
-model Message {
-  id        String   @id @default(uuid())
+model ChatMessage {
+  id        String   @id @default(cuid())
   chatId    String
-  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
-  sender    String   // "user" or "assistant"
+  role      String
   content   String
-  sources   Json?    // Stores referenced document chunks/metadata
   createdAt DateTime @default(now())
+
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+  @@index([chatId])
 }

@@ -9,6 +9,7 @@
   border-right: 1px solid var(--border);
   color: var(--text-primary);
   animation: slideIn 0.25s ease;
+  overflow: auto;
 }
 
 .sidebarTitle {
@@ -42,6 +43,11 @@
 
 .sidebarDetails {
   padding: 16px 10px;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 10px;
 }
 
 .newChat,
@@ -91,6 +97,11 @@
     align-items: center;
     justify-content: space-between;
     gap: 8px;
+
+    span {
+      color: #000;
+    }
+
   }
 
   .signout {

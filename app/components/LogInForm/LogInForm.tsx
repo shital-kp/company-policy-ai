@@ -45,7 +45,7 @@ const LogInForm: React.FC = () => {
           alt="Logo"
           className={`companyLogo ${styles.logo}`}
           width={150}
-          height={50}
+          height={34}
         />
 
         <h2 className={styles.title}>
