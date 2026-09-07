@@ -1,13 +1,27 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-const TEMP_USER_ID = "your-user-id";
-
 export async function GET() {
   try {
+    // Temporary user until authentication is implemented
+    const tempUser = await prisma.user.findUnique({
+      where: {
+        email: "employee@company.com",
+      },
+    });
+
+    if (!tempUser) {
+      return NextResponse.json(
+        {
+          message: "Temporary employee user not found",
+        },
+        { status: 500 }
+      );
+    }
+
     const chats = await prisma.chat.findMany({
       where: {
-        userId: TEMP_USER_ID,
+        userId: tempUser.id,
       },
       orderBy: {
         createdAt: "desc",
@@ -22,14 +36,21 @@ export async function GET() {
     });
 
     const history = chats.map((chat) => {
+      // Find user's question
       const question = chat.messages.find(
         (message) => message.role === "USER"
+      );
+
+      // Find assistant's answer
+      const answer = chat.messages.find(
+        (message) => message.role === "ASSISTANT"
       );
 
       return {
         id: chat.id,
         title: chat.title || "New Chat",
         question: question?.content || "",
+        answer: answer?.content || "",
         time: chat.createdAt,
       };
     });

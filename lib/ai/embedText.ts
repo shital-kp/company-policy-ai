@@ -1,5 +1,5 @@
 const OLLAMA_URL =
-  process.env.OLLAMA_URL || "http://localhost:11434";
+  process.env.OLLAMA_BASE_URL || "http://localhost:11434";
 
 export async function generateEmbedding(
   text: string

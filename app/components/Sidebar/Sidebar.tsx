@@ -6,7 +6,7 @@ import DocumentIcon from "@/public/document-icon.png";
 import profileIcon from "@/public/profile-icon.png";
 import ThemeToggle from "../ThemeToggle/ThemeToggle";
 import SignOutIcon from "@/public/log-out-icon.png";
-import RecentChats from "@/app/components/RecentChats/RecentChats";
+import chatIcon from "@/public/chat-history.png";
 
 type SidebarProps = {
   onClose?: () => void;
@@ -75,10 +75,18 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
           <a href="/admin">Documents</a>
         </div>
 
-        <RecentChats />
+        <a href="/chat-history" className={styles.recentBtn}><img
+          src={chatIcon.src}
+          width={25}
+          height={25}
+          alt="chat history icon"
+          className={`companyLogo ${styles.logo}`}
+        />
+
+          Chat History</a>
       </div>
 
-      
+
 
       <div className={styles.profileAndToggle}>
 

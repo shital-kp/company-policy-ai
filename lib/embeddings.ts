@@ -1,4 +1,4 @@
-const OLLAMA_URL = process.env.OLLAMA_URL || "http://localhost:11434";
+const OLLAMA_URL = process.env.OLLAMA_BASE_URL || "http://localhost:11434";
 
 const EMBEDDING_MODEL = "nomic-embed-text";
 

@@ -1,8 +1,8 @@
-
 const OLLAMA_URL =
-  process.env.OLLAMA_URL || "http://localhost:11434";
+  process.env.OLLAMA_BASE_URL ||
+  "http://localhost:11434";
 
-const CHAT_MODEL = "qwen2.5:3b";
+const CHAT_MODEL = "qwen2.5:1.5b";
 
 type GenerateAnswerParams = {
   question: string;
@@ -13,43 +13,56 @@ export async function generateAnswer({
   question,
   context,
 }: GenerateAnswerParams): Promise<string> {
-  const prompt = `You are a Company Policy AI Assistant.
+  const prompt = `Answer the employee's question using only the policy context.
 
-Answer ONLY from the POLICY CONTEXT below.
+Give a complete answer in 1-2 sentences.
+Be concise and direct.
+Do not repeat the question.
+Do not provide unnecessary explanation.
+Never invent information.
 
-Rules:
-- Use only the provided policy context.
-- Do not use general knowledge.
-- Do not invent information.
-- If the answer is not in the context, respond exactly:
+If the answer is not in the context, say:
 "I could not find this information in the available company policies."
-- Give a short and direct answer.
 
-POLICY CONTEXT:
+Policy context:
 ${context}
 
-QUESTION:
+Question:
 ${question}
 
 ANSWER:`;
 
-  const response = await fetch(`${OLLAMA_URL}/api/generate`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: CHAT_MODEL,
-      prompt,
-      stream: false,
-      keep_alive: "10m",
-      options: {
-        temperature: 0,
-        num_ctx: 2048,
-        num_predict: 150,
+  console.log("📝 Prompt characters:", prompt.length);
+  console.log("📝 Context characters:", context.length);
+
+  const requestStart = Date.now();
+
+  const response = await fetch(
+    `${OLLAMA_URL}/api/generate`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    }),
-  });
+      body: JSON.stringify({
+        model: CHAT_MODEL,
+        prompt,
+        stream: false,
+        keep_alive: "10m",
+        options: {
+          temperature: 0.1,
+          num_ctx: 2048,
+          num_predict: 150,
+        },
+      }),
+    }
+  );
+
+  console.log(
+    "⏱️ Ollama response:",
+    Date.now() - requestStart,
+    "ms"
+  );
 
   if (!response.ok) {
     const errorText = await response.text();
@@ -61,10 +74,26 @@ ANSWER:`;
 
   const data = await response.json();
 
-  if (!data.response) {
-    throw new Error("Ollama returned no answer");
+  console.log("========== QWEN RAW RESPONSE ==========");
+  console.log(data);
+  console.log("QWEN response:", data.response);
+  console.log(
+    "QWEN response type:",
+    typeof data.response
+  );
+  console.log("========================================");
+  
+  if (typeof data.response !== "string") {
+    console.error(
+      "❌ Qwen response is not a string:",
+      data.response
+    );
+  
+    return "I could not generate a valid answer.";
   }
-
-  return data.response.trim();
+  
+  return (
+    data.response.trim() ||
+    "I could not find this information in the available company policies."
+  );
 }
-

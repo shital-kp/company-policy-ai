@@ -12,15 +12,9 @@ export async function searchSimilarChunks(
   question: string,
   limit = 5
 ): Promise<SearchResult[]> {
-  // Generate embedding for the question
   const embedding = await generateEmbedding(question);
 
-  // Convert embedding to PostgreSQL vector format
   const vector = `[${embedding.join(",")}]`;
-
-  // Similarity threshold
-  // Lower cosine distance = more similar
-  const threshold = 0.35;
 
   const results = await prisma.$queryRaw<SearchResult[]>`
     SELECT
@@ -30,10 +24,21 @@ export async function searchSimilarChunks(
       "embedding" <=> ${vector}::vector AS distance
     FROM "DocumentChunk"
     WHERE "embedding" IS NOT NULL
-      AND "embedding" <=> ${vector}::vector <= ${threshold}
     ORDER BY "embedding" <=> ${vector}::vector
     LIMIT ${limit}
   `;
+
+  console.log("\n========== VECTOR SEARCH ==========");
+  console.log("Question:", question);
+  console.log("Results:", results.length);
+
+  results.forEach((result, index) => {
+    console.log(`\n--- RESULT ${index + 1} ---`);
+    console.log("Distance:", result.distance);
+    console.log("Content:", result.content);
+  });
+
+  console.log("===================================\n");
 
   return results;
 }

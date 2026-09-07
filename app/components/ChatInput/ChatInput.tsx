@@ -1,5 +1,4 @@
 "use client";
-
 import { ArrowUp } from "lucide-react";
 import { useState } from "react";
 import styles from "./ChatInput.module.scss";

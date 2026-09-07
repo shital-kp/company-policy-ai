@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import styles from "./RecentChats.module.scss";
 import chatIcon from "@/public/chat-history.png";
@@ -10,18 +9,15 @@ type ChatHistory = {
   title: string;
   question: string;
   time: string;
+  answer: string;
 };
 
 const RecentChats: React.FC = () => {
-  const [expandChat, setExpandChat] = useState(false);
   const [recentChats, setRecentChats] = useState<ChatHistory[]>([]);
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
-  const handleExpandChat = () => {
-    setExpandChat((prev) => !prev);
-  };
 
   useEffect(() => {
     const fetchChatHistory = async () => {
@@ -53,41 +49,27 @@ const RecentChats: React.FC = () => {
 
   return (
     <section className={styles.recentChat}>
-      <button
-        type="button"
-        onClick={handleExpandChat}
-        className={styles.recentBtn}
-      >
-        <img
-          src={chatIcon.src}
-          width={25}
-          height={25}
-          alt="chat history icon"
-          className={`companyLogo ${styles.logo}`}
-        />
-
+      <h2 className={styles.title}>
         Chat History
-      </button>
-
-      {expandChat && (
-        <div className={styles.chatDetails}>
-          {loading ? (
-            <p>Loading chats...</p>
-          ) : recentChats.length === 0 ? (
-            <p>No chat history</p>
-          ) : (
-            recentChats.map((chat) => (
-              <button
-                key={chat.id}
-                type="button"
-                onClick={() => handleChatSelect(chat.id)}
-              >
-                <p>{chat.question}</p>
-              </button>
-            ))
-          )}
-        </div>
-      )}
+      </h2>
+      <div className={styles.chatDetails}>
+        {loading ? (
+          <p>Loading chats...</p>
+        ) : recentChats.length === 0 ? (
+          <p>No chat history</p>
+        ) : (
+          recentChats.map((chat) => (
+            <button
+              key={chat.id}
+              type="button"
+              onClick={() => handleChatSelect(chat.id)}
+            >
+              <p className={styles.question}>{chat.question}</p>
+              <p className={styles.answer}>{chat.answer}</p>
+            </button>
+          ))
+        )}
+      </div>
     </section>
   );
 };

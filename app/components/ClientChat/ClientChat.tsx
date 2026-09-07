@@ -1,8 +1,9 @@
-
 "use client";
+
 import { useEffect, useRef, useState } from "react";
 import ChatInput from "@/app/components/ChatInput/ChatInput";
 import SampleQuestions from "../SampleQuestions/SampleQuestions";
+import HomeWelcomeSection from "../HomeWelcomeSection/HomeWelcomeSection";
 import styles from "./ClientChat.module.scss";
 
 type Message = {
@@ -11,56 +12,32 @@ type Message = {
   content: string;
 };
 
-type ChatClientProps = {
-  welcome: React.ReactNode;
+type ChatApiResponse = {
+  success: boolean;
+  question?: string;
+  answer?: unknown;
+  message?: unknown;
+  sources?: unknown;
 };
 
-export default function ChatClient({ welcome }: ChatClientProps) {
+export default function ChatClient() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
-  const [showSampleQuestions, setShowSampleQuestions] = useState(true);
+  const [showSampleQuestions, setShowSampleQuestions] =
+    useState(true);
 
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  // Add user question to chat
-  const handleMessageStart = (question: string) => {
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: crypto.randomUUID(),
-        role: "user",
-        content: question,
-      },
-    ]);
-  };
-
-  // Add AI answer to chat
-  const handleMessageComplete = (answer: string) => {
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: crypto.randomUUID(),
-        role: "assistant",
-        content: answer,
-      },
-    ]);
-  };
-
-  // Common handler for:
-  // 1. Typed question
-  // 2. Sample question
   const handleQuestion = async (question: string) => {
     if (!question.trim() || loading) return;
 
     const trimmedQuestion = question.trim();
 
-    // Hide sample questions after selecting/sending a question
-    setShowSampleQuestions(false);
+    const requestStart = performance.now();
 
-    // Add user question
-    handleMessageStart(trimmedQuestion);
+    console.log("🚀 Request started:", trimmedQuestion);
 
-    setLoading(true);
+    // existing code...
 
     try {
       const response = await fetch("/api/chat", {
@@ -73,30 +50,32 @@ export default function ChatClient({ welcome }: ChatClientProps) {
         }),
       });
 
+      console.log(
+        "📡 Response headers received:",
+        Math.round(performance.now() - requestStart),
+        "ms"
+      );
+
       const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(
-          data.message || "Failed to get answer"
-        );
-      }
+      console.log(
+        "📦 JSON parsed:",
+        Math.round(performance.now() - requestStart),
+        "ms"
+      );
 
-      handleMessageComplete(
-        data.answer ||
-        "I couldn't find an answer to your question."
+      // existing answer handling...
+
+      console.log(
+        "🏁 UI update:",
+        Math.round(performance.now() - requestStart),
+        "ms"
       );
     } catch (error) {
-      console.error("Chat API error:", error);
-
-      handleMessageComplete(
-        "Sorry, I couldn't get an answer. Please try again."
-      );
-    } finally {
-      setLoading(false);
+      // existing error handling
     }
   };
 
-  // Scroll to latest message
   useEffect(() => {
     bottomRef.current?.scrollIntoView({
       behavior: "smooth",
@@ -105,11 +84,15 @@ export default function ChatClient({ welcome }: ChatClientProps) {
 
   return (
     <div className={styles.chatContainer}>
-
       <div className={styles.scrollContent}>
-        {messages.length === 0 ? (
-          welcome
-        ) : (
+
+        {/* Welcome section */}
+        {messages.length === 0 && (
+          <HomeWelcomeSection />
+        )}
+
+        {/* Chat messages */}
+        {messages.length > 0 && (
           <div className={styles.chatMessages}>
             {messages.map((message) => (
               <div
@@ -120,16 +103,33 @@ export default function ChatClient({ welcome }: ChatClientProps) {
                     : styles.assistantMessage
                 }
               >
-                <div className={styles.messageBubble}>
+                <div
+                  className={
+                    styles.messageBubble
+                  }
+                >
                   <p>{message.content}</p>
                 </div>
               </div>
             ))}
 
+            {/* Loading */}
             {loading && (
-              <div className={styles.assistantMessage}>
-                <div className={styles.loadingMessage}>
-                  <span className={styles.spinner}></span>
+              <div
+                className={
+                  styles.assistantMessage
+                }
+              >
+                <div
+                  className={
+                    styles.loadingMessage
+                  }
+                >
+                  <span
+                    className={
+                      styles.spinner
+                    }
+                  />
 
                   <span>
                     Searching company policies...
@@ -141,14 +141,16 @@ export default function ChatClient({ welcome }: ChatClientProps) {
             <div ref={bottomRef} />
           </div>
         )}
+
+        {/* Sample questions */}
         {showSampleQuestions && (
           <SampleQuestions
             onQuestionSelect={handleQuestion}
           />
         )}
-
       </div>
 
+      {/* Chat input */}
       <ChatInput
         onSubmit={handleQuestion}
         loading={loading}
@@ -156,4 +158,3 @@ export default function ChatClient({ welcome }: ChatClientProps) {
     </div>
   );
 }
-
