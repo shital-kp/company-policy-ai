@@ -60,7 +60,8 @@
     }
 
     .question {
-      max-width: 75%;
+      // max-width: 75%;
+      width: max-content;
       padding: 10px 14px;
       border-radius: 16px;
       border-radius: 12px 12px 12px 4px;

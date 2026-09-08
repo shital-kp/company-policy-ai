@@ -52,7 +52,7 @@ ANSWER:`;
         options: {
           temperature: 0.1,
           num_ctx: 2048,
-          num_predict: 150,
+          num_predict: 80,
         },
       }),
     }

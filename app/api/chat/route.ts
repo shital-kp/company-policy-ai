@@ -34,7 +34,7 @@ export async function POST(req: Request) {
 
     const searchStart = Date.now();
 
-    const chunks = await searchSimilarChunks(question, 3);
+    const chunks = await searchSimilarChunks(question, 1);
 
     const searchTime = Date.now() - searchStart;
 
@@ -102,12 +102,15 @@ export async function POST(req: Request) {
     // 5. Build context
     // ==========================================
 
+    const MAX_CONTEXT_CHARS = 1000;
+
     const context = chunks
       .map((chunk, index) => {
         return `Policy Source ${index + 1}:
 ${chunk.content}`;
       })
-      .join("\n\n");
+      .join("\n\n")
+      .slice(0, MAX_CONTEXT_CHARS);
 
     console.log(
       "\n========== CONTEXT SENT TO QWEN =========="
