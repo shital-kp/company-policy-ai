@@ -13,7 +13,8 @@ export async function GET() {
     if (!tempUser) {
       return NextResponse.json(
         {
-          message: "Temporary employee user not found",
+          message:
+            "Temporary employee user not found",
         },
         { status: 500 }
       );
@@ -23,9 +24,11 @@ export async function GET() {
       where: {
         userId: tempUser.id,
       },
+
       orderBy: {
-        createdAt: "desc",
+        updatedAt: "desc",
       },
+
       include: {
         messages: {
           orderBy: {
@@ -36,35 +39,58 @@ export async function GET() {
     });
 
     const history = chats.map((chat) => {
-      // Find user's question
       const question = chat.messages.find(
-        (message) => message.role === "USER"
+        (message) =>
+          message.role === "USER"
       );
 
-      // Find assistant's answer
       const answer = chat.messages.find(
-        (message) => message.role === "ASSISTANT"
+        (message) =>
+          message.role === "ASSISTANT"
       );
 
       return {
         id: chat.id,
-        title: chat.title || "New Chat",
-        question: question?.content || "",
-        answer: answer?.content || "",
-        time: chat.createdAt,
+        title:
+          chat.title || "New Chat",
+        question:
+          question?.content || "",
+        answer:
+          answer?.content || "",
+        time: chat.updatedAt,
       };
     });
 
-    return NextResponse.json({
-      chats: history,
-    });
-  } catch (error) {
-    console.error("Chat history error:", error);
+    console.log(
+      "📚 Chat history count:",
+      history.length
+    );
 
     return NextResponse.json(
       {
-        message: "Failed to fetch chat history",
-        error: error instanceof Error ? error.message : String(error),
+        chats: history,
+      },
+      {
+        headers: {
+          "Cache-Control":
+            "no-store, no-cache, must-revalidate",
+        },
+      }
+    );
+  } catch (error) {
+    console.error(
+      "❌ Chat history error:",
+      error
+    );
+
+    return NextResponse.json(
+      {
+        message:
+          "Failed to fetch chat history",
+        error:
+          error instanceof Error
+            ? error.message
+            : String(error),
       },
       { status: 500 }
     );

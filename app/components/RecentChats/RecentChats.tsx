@@ -1,7 +1,8 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import styles from "./RecentChats.module.scss";
-import chatIcon from "@/public/chat-history.png";
+import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 type ChatHistory = {
@@ -16,42 +17,211 @@ const RecentChats: React.FC = () => {
   const [recentChats, setRecentChats] = useState<ChatHistory[]>([]);
   const [loading, setLoading] = useState(false);
 
+  const [deleteMode, setDeleteMode] = useState(false);
+  const [selectedChats, setSelectedChats] = useState<string[]>([]);
+  const [deleting, setDeleting] = useState(false);
+
   const router = useRouter();
 
+  // ==========================================
+  // Fetch chat history
+  // ==========================================
+
+  const fetchChatHistory = async () => {
+    try {
+      setLoading(true);
+
+      const response = await fetch("/api/chat-history", {
+        cache: "no-store",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch chat history");
+      }
+
+      const data = await response.json();
+
+      console.log("📚 Chat history:", data.chats);
+
+      setRecentChats(data.chats || []);
+    } catch (error) {
+      console.error(
+        "Failed to fetch chat history:",
+        error
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ==========================================
+  // Initial load
+  // ==========================================
 
   useEffect(() => {
-    const fetchChatHistory = async () => {
-      try {
-        setLoading(true);
-
-        const response = await fetch("/api/chat-history");
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch chat history");
-        }
-
-        const data = await response.json();
-
-        setRecentChats(data.chats || []);
-      } catch (error) {
-        console.error("Failed to fetch chat history:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchChatHistory();
   }, []);
 
+  // ==========================================
+  // Select chat
+  // ==========================================
+
   const handleChatSelect = (chatId: string) => {
+    if (deleteMode) {
+      return;
+    }
+
     router.push(`/chat?chatId=${chatId}`);
   };
 
+  // ==========================================
+  // Checkbox
+  // ==========================================
+
+  const handleCheckboxChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    chatId: string
+  ) => {
+    event.stopPropagation();
+
+    setSelectedChats((prev) => {
+      if (prev.includes(chatId)) {
+        return prev.filter(
+          (id) => id !== chatId
+        );
+      }
+
+      return [...prev, chatId];
+    });
+  };
+
+  // ==========================================
+  // Toggle delete mode
+  // ==========================================
+
+  const handleDeleteMode = () => {
+    setDeleteMode((prev) => !prev);
+    setSelectedChats([]);
+  };
+
+  // ==========================================
+  // Delete selected chats
+  // ==========================================
+
+  const handleDeleteSelected = async () => {
+    if (selectedChats.length === 0) {
+      return;
+    }
+
+    try {
+      setDeleting(true);
+
+      console.log(
+        "🗑️ Deleting chats:",
+        selectedChats
+      );
+
+      await Promise.all(
+        selectedChats.map(async (chatId) => {
+          const response = await fetch(
+            `/api/chat-history/${chatId}`,
+            {
+              method: "DELETE",
+            }
+          );
+
+          if (!response.ok) {
+            const data = await response.json().catch(
+              () => null
+            );
+
+            throw new Error(
+              data?.message ||
+                `Failed to delete chat: ${chatId}`
+            );
+          }
+        })
+      );
+
+      console.log(
+        "✅ Selected chats deleted"
+      );
+
+      setSelectedChats([]);
+      setDeleteMode(false);
+
+      // Reload from database
+      await fetchChatHistory();
+    } catch (error) {
+      console.error(
+        "Failed to delete chats:",
+        error
+      );
+
+      alert(
+        "Failed to delete selected chats. Please try again."
+      );
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  // ==========================================
+  // UI
+  // ==========================================
+
   return (
     <section className={styles.recentChat}>
-      <h2 className={styles.title}>
-        Chat History
-      </h2>
+      <div className={styles.titleRow}>
+        <h2 className={styles.title}>
+          Chat History
+        </h2>
+
+        {!deleteMode ? (
+          <button
+            type="button"
+            className={styles.deleteChatButton}
+            onClick={handleDeleteMode}
+          >
+            <Trash2 size={16} />
+            <span>Delete Chat</span>
+          </button>
+        ) : (
+          <div className={styles.deleteActions}>
+            <button
+              type="button"
+              className={styles.cancelButton}
+              onClick={handleDeleteMode}
+              disabled={deleting}
+            >
+              Cancel
+            </button>
+
+            <button
+              type="button"
+              className={styles.deleteSelectedButton}
+              onClick={handleDeleteSelected}
+              disabled={
+                selectedChats.length === 0 ||
+                deleting
+              }
+            >
+              <Trash2 size={16} />
+
+              <span>
+                {deleting
+                  ? "Deleting..."
+                  : `Delete${
+                      selectedChats.length > 0
+                        ? ` (${selectedChats.length})`
+                        : ""
+                    }`}
+              </span>
+            </button>
+          </div>
+        )}
+      </div>
+
       <div className={styles.chatDetails}>
         {loading ? (
           <p>Loading chats...</p>
@@ -59,14 +229,41 @@ const RecentChats: React.FC = () => {
           <p>No chat history</p>
         ) : (
           recentChats.map((chat) => (
-            <button
+            <div
               key={chat.id}
-              type="button"
-              onClick={() => handleChatSelect(chat.id)}
+              className={styles.chatItem}
+              onClick={() =>
+                handleChatSelect(chat.id)
+              }
             >
-              <p className={styles.question}>{chat.question}</p>
-              <p className={styles.answer}>{chat.answer}</p>
-            </button>
+              {deleteMode && (
+                <input
+                  type="checkbox"
+                  checked={selectedChats.includes(
+                    chat.id
+                  )}
+                  onChange={(event) =>
+                    handleCheckboxChange(
+                      event,
+                      chat.id
+                    )
+                  }
+                  onClick={(event) =>
+                    event.stopPropagation()
+                  }
+                />
+              )}
+
+              <div className={styles.chatContent}>
+                <p className={styles.question}>
+                  {chat.question}
+                </p>
+
+                <p className={styles.answer}>
+                  {chat.answer}
+                </p>
+              </div>
+            </div>
           ))
         )}
       </div>
