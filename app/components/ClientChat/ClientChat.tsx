@@ -1,9 +1,11 @@
-
 "use client";
+
 import { useEffect, useRef, useState } from "react";
+
 import ChatInput from "@/app/components/ChatInput/ChatInput";
 import SampleQuestions from "../SampleQuestions/SampleQuestions";
-import HomeWelcomeSection from "../HomeWelcomeSection/HomeWelcomeSection"
+import HomeWelcomeSection from "../HomeWelcomeSection/HomeWelcomeSection";
+
 import styles from "./ClientChat.module.scss";
 
 type Message = {
@@ -16,6 +18,13 @@ type ChatClientProps = {
   welcome: React.ReactNode;
 };
 
+type ChatApiResponse = {
+  success?: boolean;
+  answer?: string;
+  message?: string;
+  chatId?: string;
+};
+
 export default function ChatClient({ welcome }: ChatClientProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
@@ -23,46 +32,30 @@ export default function ChatClient({ welcome }: ChatClientProps) {
 
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  // Add user question to chat
-  const handleMessageStart = (question: string) => {
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: crypto.randomUUID(),
-        role: "user",
-        content: question,
-      },
-    ]);
-  };
-
-  // Add AI answer to chat
-  const handleMessageComplete = (answer: string) => {
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: crypto.randomUUID(),
-        role: "assistant",
-        content: answer,
-      },
-    ]);
-  };
-
-  // Common handler for:
+  // ==========================================
+  // Common question handler
+  // Used by:
   // 1. Typed question
   // 2. Sample question
+  // ==========================================
+
   const handleQuestion = async (question: string) => {
-    if (!question.trim() || loading) return;
+    if (!question.trim() || loading) {
+      return;
+    }
 
     const trimmedQuestion = question.trim();
 
     console.log("🚀 Sending question:", trimmedQuestion);
 
-    // Immediately update UI
+    // Hide sample questions
     setShowSampleQuestions(false);
 
+    // Create message IDs
     const userMessageId = crypto.randomUUID();
     const assistantMessageId = crypto.randomUUID();
 
+    // Immediately show user question
     setMessages((prev) => [
       ...prev,
       {
@@ -72,6 +65,7 @@ export default function ChatClient({ welcome }: ChatClientProps) {
       },
     ]);
 
+    // Start loading
     setLoading(true);
 
     const requestStart = performance.now();
@@ -79,6 +73,7 @@ export default function ChatClient({ welcome }: ChatClientProps) {
     try {
       console.log("📡 Calling /api/chat...");
 
+      // Call Chat API
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
@@ -95,6 +90,7 @@ export default function ChatClient({ welcome }: ChatClientProps) {
         "ms"
       );
 
+      // Check API response
       if (!response.ok) {
         throw new Error(`API error: ${response.status}`);
       }
@@ -103,6 +99,7 @@ export default function ChatClient({ welcome }: ChatClientProps) {
 
       console.log("📥 Chat API response:", data);
 
+      // Get answer
       let answer = "";
 
       if (typeof data.answer === "string") {
@@ -114,6 +111,7 @@ export default function ChatClient({ welcome }: ChatClientProps) {
           "Sorry, I couldn't get an answer. Please try again.";
       }
 
+      // Add assistant message
       setMessages((prev) => [
         ...prev,
         {
@@ -131,6 +129,7 @@ export default function ChatClient({ welcome }: ChatClientProps) {
     } catch (error) {
       console.error("❌ Chat API error:", error);
 
+      // Show error message
       setMessages((prev) => [
         ...prev,
         {
@@ -141,24 +140,36 @@ export default function ChatClient({ welcome }: ChatClientProps) {
         },
       ]);
     } finally {
+      // Stop loading
       setLoading(false);
     }
   };
 
+  // ==========================================
   // Scroll to latest message
+  // ==========================================
+
   useEffect(() => {
     bottomRef.current?.scrollIntoView({
       behavior: "smooth",
     });
   }, [messages, loading]);
 
+  // ==========================================
+  // Render
+  // ==========================================
+
   return (
     <div className={styles.chatContainer}>
+      {/* Welcome section */}
       <HomeWelcomeSection />
+
       <div className={styles.scrollContent}>
+        {/* Empty chat */}
         {messages.length === 0 ? (
           welcome
         ) : (
+          /* Chat messages */
           <div className={styles.chatMessages}>
             {messages.map((message) => (
               <div
@@ -175,6 +186,7 @@ export default function ChatClient({ welcome }: ChatClientProps) {
               </div>
             ))}
 
+            {/* Loading */}
             {loading && (
               <div className={styles.assistantMessage}>
                 <div className={styles.loadingMessage}>
@@ -190,14 +202,16 @@ export default function ChatClient({ welcome }: ChatClientProps) {
             <div ref={bottomRef} />
           </div>
         )}
+
+        {/* Sample questions */}
         {showSampleQuestions && (
           <SampleQuestions
             onQuestionSelect={handleQuestion}
           />
         )}
-
       </div>
 
+      {/* Chat Input */}
       <ChatInput
         onSubmit={handleQuestion}
         loading={loading}
@@ -205,4 +219,3 @@ export default function ChatClient({ welcome }: ChatClientProps) {
     </div>
   );
 }
-

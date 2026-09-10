@@ -1,9 +1,10 @@
-'use client';
+
+"use client";
+
 import React from "react";
 import styles from "./Sidebar.module.scss";
 import NewChatIcon from "@/public/new-chat-icon.png";
 import DocumentIcon from "@/public/document-icon.png";
-import profileIcon from "@/public/profile-icon.png";
 import ThemeToggle from "../ThemeToggle/ThemeToggle";
 import SignOutIcon from "@/public/log-out-icon.png";
 import chatIcon from "@/public/chat-history.png";
@@ -15,6 +16,14 @@ type SidebarProps = {
 const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
   const [isSettingOpen, setIsSettingOpen] = React.useState(false);
   const [isDocumentOpen, setIsDocumentOpen] = React.useState(true);
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+
+  // Check whether user is logged in
+  React.useEffect(() => {
+    const user = localStorage.getItem("user");
+
+    setIsLoggedIn(!!user);
+  }, []);
 
   const handleSignOut = () => {
     localStorage.removeItem("user");
@@ -30,12 +39,11 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
     setIsDocumentOpen(!isDocumentOpen);
   };
 
-
   return (
     <div className={styles.sidebar}>
-
       <div className={styles.sidebarTitle}>
         AI BOT
+
         <button
           className={styles.closeButton}
           onClick={onClose}
@@ -46,7 +54,6 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
       </div>
 
       <div className={styles.sidebarDetails}>
-
         {/* New Chat */}
         <a href="/" className={styles.newChat}>
           <img
@@ -55,13 +62,12 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
             height={25}
             alt="new-chat-icon"
           />
+
           <span>New Chat</span>
         </a>
 
-
-
         {/* Documents */}
-        <div
+        <a href="/admin"
           className={styles.documentManagement}
           onClick={documentShow}
         >
@@ -72,66 +78,67 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
             alt="document-icon"
           />
 
-          <a href="/admin">Documents</a>
-        </div>
+          Documents
+        </a>
 
-        <a href="/chat-history" className={styles.recentBtn}><img
-          src={chatIcon.src}
-          width={25}
-          height={25}
-          alt="chat history icon"
-          className={`companyLogo ${styles.logo}`}
-        />
-
-          Chat History</a>
-      </div>
-
-
-
-      <div className={styles.profileAndToggle}>
-
-        {isSettingOpen && (
-          <div className={styles.themeToggleBtn}>
-            <div className={styles.togglePopup}>
-
-              <div className={styles.theme}>
-                <span>Theme</span>
-                <ThemeToggle />
-              </div>
-
-              <button className={styles.signout} onClick={handleSignOut}>
-                <img
-                  src={SignOutIcon.src}
-                  width={20}
-                  height={20}
-                  alt="log-out-icon"
-                />
-
-                <span>Sign Out</span>
-              </button>
-
-            </div>
-          </div>
-        )}
-
-        <div
-          className={styles.userProfile}
-          onClick={handleProfileBtn}
+        {/* Chat History */}
+        <a
+          href="/chat-history"
+          className={styles.recentBtn}
         >
-          {/* <img
-            src={profileIcon.src}
+          <img
+            src={chatIcon.src}
             width={25}
             height={25}
-            alt="profile"
-          /> */}
+            alt="chat history icon"
+            className={`companyLogo ${styles.logo}`}
+          />
 
-          <span className={styles.userName}>
-            User Profile
-          </span>
-        </div>
+          Chat History
+        </a>
       </div>
+
+      {/* User Profile - show only when logged in */}
+      {isLoggedIn && (
+        <div className={styles.profileAndToggle}>
+          {isSettingOpen && (
+            <div className={styles.themeToggleBtn}>
+              <div className={styles.togglePopup}>
+                <div className={styles.theme}>
+                  <span>Theme</span>
+                  <ThemeToggle />
+                </div>
+
+                <button
+                  className={styles.signout}
+                  onClick={handleSignOut}
+                >
+                  <img
+                    src={SignOutIcon.src}
+                    width={20}
+                    height={20}
+                    alt="log-out-icon"
+                  />
+
+                  <span>Sign Out</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div
+            className={styles.userProfile}
+            onClick={handleProfileBtn}
+          >
+            <span className={styles.userName}>
+              User Profile
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default Sidebar;
+

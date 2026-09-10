@@ -1,6 +1,6 @@
 .recentChat {
   width: 100%;
-  padding: 20px 0;
+  padding: 52px 0;
 
   @media (min-width: 769px) {
     padding: 40px 20px;
@@ -26,16 +26,18 @@
     align-items: center;
     gap: 6px;
     border: none;
-    background: transparent;
+    background: var(--background);
     cursor: pointer;
     font-size: 13px;
     padding: 5px 8px;
+    color: var(--foreground);
   }
 
   .deleteActions {
     display: flex;
     align-items: center;
     gap: 6px;
+    color: var(--foreground);
   }
 
   .cancelButton,
@@ -48,11 +50,23 @@
     font-size: 13px;
     padding: 5px 8px;
     border-radius: 5px;
+    color: var(--foreground);
+    background: var(--background);
+    border: 1px solid var(--border);
   }
 
+  // .deleteSelectedButton {
+  //   color: var(--foreground);
+  //   background: var(--background);
+  //   border: 1px solid var(--border);
+  // }
+
   .deleteSelectedButton:disabled {
-    opacity: 0.5;
+    // opacity: 0.5;
     cursor: not-allowed;
+    color: var(--foreground);
+    background: var(--background);
+    border: 1px solid var(--border);
   }
 
   .chatItem {
@@ -105,7 +119,11 @@
       align-items: flex-start;
       justify-content: space-between;
       width: 100%;
-      gap: 50px;
+      gap: 30px;
+
+      @media (min-width: 769px) {
+        gap: 50px;
+      }
     }
 
     .chatItem .deleteButton {

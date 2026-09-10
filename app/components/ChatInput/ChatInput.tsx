@@ -1,6 +1,8 @@
 "use client";
+
 import { ArrowUp } from "lucide-react";
 import { useState } from "react";
+
 import styles from "./ChatInput.module.scss";
 
 type ChatInputProps = {
@@ -17,14 +19,17 @@ export default function ChatInput({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Don't submit empty message
     if (!message.trim() || loading) {
       return;
     }
 
     const question = message.trim();
 
+    // Clear input
     setMessage("");
 
+    // Send question to parent
     onSubmit(question);
   };
 
@@ -51,9 +56,11 @@ export default function ChatInput({
             className={styles.sendBtn}
           >
             {loading ? (
-              <span className={styles.buttonSpinner}></span>
+              <span
+                className={styles.buttonSpinner}
+              ></span>
             ) : (
-              <ArrowUp className="icon" />
+              <ArrowUp />
             )}
           </button>
         </div>

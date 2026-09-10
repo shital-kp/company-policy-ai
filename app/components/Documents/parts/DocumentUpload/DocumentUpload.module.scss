@@ -115,3 +115,19 @@
   color: #2563eb !important;
   font-weight: 500;
 }
+
+
+
+.uploadBox {
+  width: 100%;
+  border: 2px dashed var(--border);
+  border-radius: 10px;
+  padding: 30px 20px;
+  text-align: center;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.uploadBox.dragging {
+  border-color: var(--primary);
+  background: var(--surface-secondary);
+}

@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useMemo, useState } from "react";
 import { Trash2, Search, X } from "lucide-react";
 import styles from "./DocumentList.module.scss";
@@ -68,7 +67,7 @@ const DocumentList: React.FC<DocumentListProps> = ({
           <h2>Uploaded Documents</h2>
 
           <span>
-            {documents.length}{" "}
+            {documents.length}
             {documents.length === 1
               ? "document"
               : "documents"}

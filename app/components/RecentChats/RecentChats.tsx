@@ -137,7 +137,7 @@ const RecentChats: React.FC = () => {
 
             throw new Error(
               data?.message ||
-                `Failed to delete chat: ${chatId}`
+              `Failed to delete chat: ${chatId}`
             );
           }
         })
@@ -177,48 +177,50 @@ const RecentChats: React.FC = () => {
           Chat History
         </h2>
 
-        {!deleteMode ? (
-          <button
-            type="button"
-            className={styles.deleteChatButton}
-            onClick={handleDeleteMode}
-          >
-            <Trash2 size={16} />
-            <span>Delete Chat</span>
-          </button>
-        ) : (
-          <div className={styles.deleteActions}>
-            <button
-              type="button"
-              className={styles.cancelButton}
-              onClick={handleDeleteMode}
-              disabled={deleting}
-            >
-              Cancel
-            </button>
+        {recentChats.length > 0 && (
+          <>
+            {!deleteMode ? (
+              <button
+                type="button"
+                className={styles.deleteChatButton}
+                onClick={handleDeleteMode}
+              >
+                <Trash2 size={16} />
+                <span>Delete Chat</span>
+              </button>
+            ) : (
+              <div className={styles.deleteActions}>
+                <button
+                  type="button"
+                  className={styles.cancelButton}
+                  onClick={handleDeleteMode}
+                  disabled={deleting}
+                >
+                  Cancel
+                </button>
 
-            <button
-              type="button"
-              className={styles.deleteSelectedButton}
-              onClick={handleDeleteSelected}
-              disabled={
-                selectedChats.length === 0 ||
-                deleting
-              }
-            >
-              <Trash2 size={16} />
+                <button
+                  type="button"
+                  className={styles.deleteSelectedButton}
+                  onClick={handleDeleteSelected}
+                  disabled={
+                    selectedChats.length === 0 || deleting
+                  }
+                >
+                  <Trash2 size={16} />
 
-              <span>
-                {deleting
-                  ? "Deleting..."
-                  : `Delete${
-                      selectedChats.length > 0
+                  <span>
+                    {deleting
+                      ? "Deleting..."
+                      : `Delete${selectedChats.length > 0
                         ? ` (${selectedChats.length})`
                         : ""
-                    }`}
-              </span>
-            </button>
-          </div>
+                      }`}
+                  </span>
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
 
