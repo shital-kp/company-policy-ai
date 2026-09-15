@@ -1,6 +1,9 @@
 "use client";
+
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+
 import styles from "./LoginForm.module.scss";
 import logo from "@/public/companyLogo.png";
 import ForgotPassword from "@/app/components/ForgetPassword/ForgetPassword";
@@ -11,29 +14,46 @@ const LogInForm: React.FC = () => {
   const [showForgotPassword, setShowForgotPassword] =
     useState(false);
 
-  const handleSubmit = (
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
 
+    setError(null);
+    setLoading(true);
+
     const formData = new FormData(event.currentTarget);
 
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
+    const email = String(
+      formData.get("email") ?? ""
+    ).trim();
 
-    // Temporary frontend login
-    if (email && password) {
-      const user = {
-        name: email,
-        email: email,
-      };
+    const password = String(
+      formData.get("password") ?? ""
+    );
 
-      localStorage.setItem(
-        "user",
-        JSON.stringify(user)
-      );
+    try {
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setError("Invalid email or password.");
+        return;
+      }
 
       router.push("/");
+      router.refresh();
+    } catch (error) {
+      console.error("Login error:", error);
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -61,7 +81,6 @@ const LogInForm: React.FC = () => {
         className={styles.form}
         onSubmit={handleSubmit}
       >
-        {/* Email */}
         <label htmlFor="email">
           Email
         </label>
@@ -73,7 +92,6 @@ const LogInForm: React.FC = () => {
           required
         />
 
-        {/* Password */}
         <label htmlFor="password">
           Password
         </label>
@@ -85,7 +103,6 @@ const LogInForm: React.FC = () => {
           required
         />
 
-        {/* Forgot Password */}
         <button
           type="button"
           className={styles.passwordText}
@@ -94,15 +111,20 @@ const LogInForm: React.FC = () => {
           Forgot password?
         </button>
 
-        {/* Sign In */}
+        {error && (
+          <p className={styles.error}>
+            {error}
+          </p>
+        )}
+
         <button
           type="submit"
           className={styles.submitBtn}
+          disabled={loading}
         >
-          Sign In
+          {loading ? "Signing In..." : "Sign In"}
         </button>
 
-        {/* Sign Up */}
         <p className={styles.text}>
           Don't have an account?{" "}
           <a
@@ -114,7 +136,6 @@ const LogInForm: React.FC = () => {
         </p>
       </form>
 
-      {/* Forgot Password Modal */}
       {showForgotPassword && (
         <ForgotPassword
           onClose={() => setShowForgotPassword(false)}

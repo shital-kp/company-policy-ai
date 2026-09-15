@@ -12,8 +12,8 @@ type User = {
 };
 
 type HeaderProps = {
-  handleSidebarClick: () => void;
-  user: User | null;
+  handleSidebarClick?: () => void;
+  user?: User | null;
 };
 
 const Header: React.FC<HeaderProps> = () => {
