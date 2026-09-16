@@ -1,28 +1,36 @@
+
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/auth";
 
 export async function GET() {
   try {
-    // Temporary user until authentication is implemented
-    const tempUser = await prisma.user.findUnique({
-      where: {
-        email: "employee@company.com",
-      },
-    });
+    // ==========================================
+    // 1. Get logged-in user
+    // ==========================================
 
-    if (!tempUser) {
+    const session = await auth();
+
+    if (!session?.user?.id) {
       return NextResponse.json(
         {
-          message:
-            "Temporary employee user not found",
+          message: "Unauthorized",
         },
-        { status: 500 }
+        { status: 401 }
       );
     }
 
+    const userId = session.user.id;
+
+    console.log("Chat history user:", userId);
+
+    // ==========================================
+    // 2. Get chats for this user only
+    // ==========================================
+
     const chats = await prisma.chat.findMany({
       where: {
-        userId: tempUser.id,
+        userId: userId,
       },
 
       orderBy: {
@@ -38,33 +46,36 @@ export async function GET() {
       },
     });
 
+    // ==========================================
+    // 3. Format chat history
+    // ==========================================
+
     const history = chats.map((chat) => {
       const question = chat.messages.find(
-        (message) =>
-          message.role === "USER"
+        (message) => message.role === "USER"
       );
 
       const answer = chat.messages.find(
-        (message) =>
-          message.role === "ASSISTANT"
+        (message) => message.role === "ASSISTANT"
       );
 
       return {
         id: chat.id,
-        title:
-          chat.title || "New Chat",
-        question:
-          question?.content || "",
-        answer:
-          answer?.content || "",
+        title: chat.title || "New Chat",
+        question: question?.content || "",
+        answer: answer?.content || "",
         time: chat.updatedAt,
       };
     });
 
     console.log(
-      "📚 Chat history count:",
+      "Chat history count:",
       history.length
     );
+
+    // ==========================================
+    // 4. Return history
+    // ==========================================
 
     return NextResponse.json(
       {
@@ -85,8 +96,7 @@ export async function GET() {
 
     return NextResponse.json(
       {
-        message:
-          "Failed to fetch chat history",
+        message: "Failed to fetch chat history",
         error:
           error instanceof Error
             ? error.message

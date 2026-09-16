@@ -35,6 +35,7 @@ services:
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/company_policy_db?schema=public
       - OLLAMA_BASE_URL=http://ollama:11434
       - NODE_ENV=development
+      - AUTH_SECRET= ${AUTH_SECRET}
     volumes:
       - .:/app
       - /app/node_modules

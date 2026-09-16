@@ -2,6 +2,8 @@
 "use client";
 
 import React from "react";
+import { useSession, signOut } from "next-auth/react";
+
 import styles from "./Sidebar.module.scss";
 import NewChatIcon from "@/public/new-chat-icon.png";
 import DocumentIcon from "@/public/document-icon.png";
@@ -14,33 +16,44 @@ type SidebarProps = {
 };
 
 const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
-  const [isSettingOpen, setIsSettingOpen] = React.useState(false);
-  const [isDocumentOpen, setIsDocumentOpen] = React.useState(true);
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  const [isSettingOpen, setIsSettingOpen] =
+    React.useState(false);
 
-  // Check whether user is logged in
-  React.useEffect(() => {
-    const user = localStorage.getItem("user");
+  const { data: session, status } = useSession();
 
-    setIsLoggedIn(!!user);
-  }, []);
+  const isLoggedIn = status === "authenticated";
 
-  const handleSignOut = () => {
-    localStorage.removeItem("user");
+  // ==========================================
+  // Check admin access
+  // ==========================================
 
-    window.location.href = "/signin";
+  const isAdmin =
+    session?.user?.role === "HR_ADMIN";
+
+  // ==========================================
+  // Sign out
+  // ==========================================
+
+  const handleSignOut = async () => {
+    await signOut({
+      callbackUrl: "/signin",
+    });
   };
+
+  // ==========================================
+  // Profile popup
+  // ==========================================
 
   const handleProfileBtn = () => {
-    setIsSettingOpen(!isSettingOpen);
-  };
-
-  const documentShow = () => {
-    setIsDocumentOpen(!isDocumentOpen);
+    setIsSettingOpen((prev) => !prev);
   };
 
   return (
     <div className={styles.sidebar}>
+      {/* ======================================
+          Sidebar Header
+      ====================================== */}
+
       <div className={styles.sidebarTitle}>
         AI BOT
 
@@ -53,9 +66,17 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
         </button>
       </div>
 
+      {/* ======================================
+          Sidebar Menu
+      ====================================== */}
+
       <div className={styles.sidebarDetails}>
         {/* New Chat */}
-        <a href="/" className={styles.newChat}>
+
+        <a
+          href="/"
+          className={styles.newChat}
+        >
           <img
             src={NewChatIcon.src}
             width={25}
@@ -66,22 +87,27 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
           <span>New Chat</span>
         </a>
 
-        {/* Documents */}
-        <a href="/admin"
-          className={styles.documentManagement}
-          onClick={documentShow}
-        >
-          <img
-            src={DocumentIcon.src}
-            width={25}
-            height={25}
-            alt="document-icon"
-          />
+        {/* Documents
+            Only HR_ADMIN can see this */}
 
-          Documents
-        </a>
+        {isAdmin && (
+          <a
+            href="/admin"
+            className={styles.documentManagement}
+          >
+            <img
+              src={DocumentIcon.src}
+              width={25}
+              height={25}
+              alt="document-icon"
+            />
+
+            Documents
+          </a>
+        )}
 
         {/* Chat History */}
+
         <a
           href="/chat-history"
           className={styles.recentBtn}
@@ -98,16 +124,31 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
         </a>
       </div>
 
-      {/* User Profile - show only when logged in */}
+      {/* ======================================
+          User Profile
+          Show only when logged in
+      ====================================== */}
+
       {isLoggedIn && (
         <div className={styles.profileAndToggle}>
+          {/* Profile Popup */}
+
           {isSettingOpen && (
-            <div className={styles.themeToggleBtn}>
-              <div className={styles.togglePopup}>
+            <div
+              className={styles.themeToggleBtn}
+            >
+              <div
+                className={styles.togglePopup}
+              >
+                {/* Theme */}
+
                 <div className={styles.theme}>
                   <span>Theme</span>
+
                   <ThemeToggle />
                 </div>
+
+                {/* Sign Out */}
 
                 <button
                   className={styles.signout}
@@ -125,6 +166,8 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
               </div>
             </div>
           )}
+
+          {/* User Profile */}
 
           <div
             className={styles.userProfile}

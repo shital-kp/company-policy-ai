@@ -1,14 +1,36 @@
+
 import { NextResponse } from "next/server";
 import { searchSimilarChunks } from "@/lib/ai/vectorSearch";
 import { generateAnswer } from "@/lib/ai/generateAnswer";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/auth";
 
 export async function POST(req: Request) {
   const start = Date.now();
 
   try {
     // ==========================================
-    // 1. Read request
+    // 1. Get logged-in user
+    // ==========================================
+
+    const session = await auth();
+
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Unauthorized",
+        },
+        { status: 401 }
+      );
+    }
+
+    const userId = session.user.id;
+
+    console.log("👤 Logged-in user:", userId);
+
+    // ==========================================
+    // 2. Read request
     // ==========================================
 
     const body = await req.json();
@@ -29,29 +51,8 @@ export async function POST(req: Request) {
     console.log("\n==========================================");
     console.log("⏱️ Question:", question);
     console.log("💬 Chat ID:", chatId || "NEW CHAT");
+    console.log("👤 User ID:", userId);
     console.log("==========================================");
-
-    // ==========================================
-    // 2. Get temporary employee user
-    // ==========================================
-    // Authentication is not implemented yet,
-    // so we are using the seeded employee user.
-
-    const user = await prisma.user.findUnique({
-      where: {
-        email: "employee@company.com",
-      },
-    });
-
-    if (!user) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Employee user not found",
-        },
-        { status: 500 }
-      );
-    }
 
     // ==========================================
     // 3. Find existing chat OR create new chat
@@ -67,7 +68,7 @@ export async function POST(req: Request) {
       chat = await prisma.chat.findFirst({
         where: {
           id: chatId,
-          userId: user.id,
+          userId: userId,
         },
       });
 
@@ -89,7 +90,7 @@ export async function POST(req: Request) {
 
       chat = await prisma.chat.create({
         data: {
-          userId: user.id,
+          userId: userId,
           title:
             question.length > 50
               ? question.substring(0, 50) + "..."
@@ -97,7 +98,10 @@ export async function POST(req: Request) {
         },
       });
 
-      console.log("🆕 New chat created:", chat.id);
+      console.log(
+        "🆕 New chat created:",
+        chat.id
+      );
     }
 
     // ==========================================
@@ -120,7 +124,10 @@ export async function POST(req: Request) {
 
     const searchStart = Date.now();
 
-    const chunks = await searchSimilarChunks(question, 1);
+    const chunks = await searchSimilarChunks(
+      question,
+      1
+    );
 
     const searchTime = Date.now() - searchStart;
 
@@ -145,7 +152,9 @@ export async function POST(req: Request) {
     // ==========================================
 
     chunks.forEach((chunk, index) => {
-      console.log(`\n--- CHUNK ${index + 1} ---`);
+      console.log(
+        `\n--- CHUNK ${index + 1} ---`
+      );
 
       console.log(
         "Distance:",
@@ -170,7 +179,6 @@ export async function POST(req: Request) {
         "⚠️ No relevant policy chunks found"
       );
 
-      // Save assistant response
       await prisma.chatMessage.create({
         data: {
           chatId: chat.id,
@@ -179,7 +187,6 @@ export async function POST(req: Request) {
         },
       });
 
-      // Update chat time
       await prisma.chat.update({
         where: {
           id: chat.id,
@@ -243,7 +250,8 @@ ${chunk.content}`;
       context,
     });
 
-    const generationTime = Date.now() - aiStart;
+    const generationTime =
+      Date.now() - aiStart;
 
     console.log(
       "⏱️ Qwen generation:",
