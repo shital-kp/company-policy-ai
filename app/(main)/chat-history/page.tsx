@@ -1,11 +1,10 @@
-import React from "react";
-import Documents from "@/app/components/Documents/Documents";
 import styles from "./page.module.scss";
+import RecentChats from "@/app/components/RecentChats/RecentChats";
 
 export default function AdminLayout() {
   return (
     <div className={styles.mainContent}>
-      <Documents />
+      <RecentChats />
     </div>
   );
 }

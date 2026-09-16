@@ -8,7 +8,7 @@ const LogInForm: React.FC = () => {
     return (
         <div className={styles.signupForm}>
             <div className={styles.titleBlock}>
-                <img src={logo.src} alt="Logo" className={`companyLogo ${styles.logo}`} width={150} height={50} />
+                <img src={logo.src} alt="Logo" className={`companyLogo ${styles.logo}`} width={150} height={34} />
                 <h2 className={styles.title}>Sign Up</h2>
                 <p className={styles.description}>Use your email and password to sign up</p>
             </div>

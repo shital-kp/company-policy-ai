@@ -3,35 +3,45 @@
 
   .tableWrapper {
     width: 100%;
+    max-height: 200px;
     overflow-x: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     border: 1px solid var(--border);
     border-radius: 10px;
   }
 
   .table {
     width: 100%;
-    min-width: 700px;
+    min-width: 650px;
     border-collapse: collapse;
     background: var(--surface);
     color: var(--text-primary);
   }
 
+  .table thead {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--surface);
+  }
+
   .table th,
   .table td {
-    padding: 14px 16px;
+    padding: 12px;
     text-align: left;
     border-bottom: 1px solid var(--border);
   }
 
   .table th {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     color: var(--text-secondary);
     background: var(--surface-secondary);
   }
 
   .table td {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .table tbody tr:last-child td {
@@ -40,6 +50,30 @@
 
   .table tbody tr:hover {
     background: var(--surface-hover);
+  }
+
+  /* Tablet / Desktop */
+  @media (min-width: 768px) {
+    .tableWrapper {
+      max-height: 200px;
+    }
+
+    .table {
+      min-width: 700px;
+    }
+
+    .table th,
+    .table td {
+      padding: 14px 16px;
+    }
+
+    .table th {
+      font-size: 13px;
+    }
+
+    .table td {
+      font-size: 14px;
+    }
   }
 
   .documentName {
@@ -96,45 +130,51 @@
   }
 }
 
-// .table {
-//   overflow: hidden;
-//   border: 1px solid var(--border);
-//   border-radius: 10px;
-//   background: var(--surface);
-// }
+.listHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
 
-// .tableHeader,
-// .documentRow {
-//   display: grid;
-//   grid-template-columns: 2fr 0.8fr 1.1fr 0.8fr 60px;
-//   align-items: center;
-// }
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
-// .tableHeader {
-//   min-height: 48px;
-//   padding: 0 20px;
-//   background: var(--surface-hover);
-//   border-bottom: 1px solid var(--border);
-//   font-size: 12px;
-//   font-weight: 600;
-//   color: var(--text-secondary);
-// }
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 340px;
+  padding: 9px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
 
-// .documentRow {
-//   min-height: 62px;
-//   padding: 0 20px;
-//   border-bottom: 1px solid var(--border);
-//   font-size: 14px;
-//   color: var(--text-primary);
+  >svg {
+    stroke: var(--text-secondary);
+  }
+}
 
-//   &:last-child {
-//     border-bottom: none;
-//   }
+.searchBox input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+}
 
-//   &:hover {
-//     background: var(--surface-hover);
-//   }
-// }
+.statusFilter {
+  min-width: 130px;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
 
 .status {
   display: inline-flex;
@@ -184,5 +224,121 @@
   &:hover {
     background: #fef2f2;
     color: var(--danger);
+  }
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.deleteModal {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  padding: 28px;
+  border-radius: 8px;
+  background: var(--background-color, #ffffff);
+  color: var(--text-color, #222222);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+  text-align: center;
+}
+
+.closeButton {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.deleteIcon {
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.deleteModal h3 {
+  margin: 0 0 12px;
+  font-size: 20px;
+}
+
+.deleteModal p {
+  margin: 8px 0;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+.warningText {
+  color: #dc2626;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.cancelButton,
+.confirmDeleteButton {
+  min-width: 100px;
+  padding: 10px 18px;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.cancelButton {
+  border: 1px solid #ccc;
+  background: transparent;
+  color: inherit;
+}
+
+.confirmDeleteButton {
+  border: none;
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.confirmDeleteButton:hover {
+  background: #b91c1c;
+}
+
+@media (max-width: 768px) {
+  .listHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .searchBox {
+    width: auto;
+  }
+
+  .statusFilter {
+    width: 100%;
   }
 }

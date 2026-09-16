@@ -1,0 +1,164 @@
+.recentChat {
+  width: 100%;
+  padding: 52px 0;
+
+  @media (min-width: 769px) {
+    padding: 40px 20px;
+  }
+
+  .titleRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin-bottom: 30px;
+
+    @media (min-width: 769px) {
+      font-size: 20px;
+    }
+  }
+
+  .deleteChatButton {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    background: var(--background);
+    cursor: pointer;
+    font-size: 13px;
+    padding: 5px 8px;
+    color: var(--foreground);
+  }
+
+  .deleteActions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--foreground);
+  }
+
+  .cancelButton,
+  .deleteSelectedButton {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 5px 8px;
+    border-radius: 5px;
+    color: var(--foreground);
+    background: var(--background);
+    border: 1px solid var(--border);
+  }
+
+  // .deleteSelectedButton {
+  //   color: var(--foreground);
+  //   background: var(--background);
+  //   border: 1px solid var(--border);
+  // }
+
+  .deleteSelectedButton:disabled {
+    // opacity: 0.5;
+    cursor: not-allowed;
+    color: var(--foreground);
+    background: var(--background);
+    border: 1px solid var(--border);
+  }
+
+  .chatItem {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+  }
+
+  .chatItem input[type="checkbox"] {
+    margin-top: 5px;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  .chatContent {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .chatDetails {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+    max-height: 500px;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #6c7684;
+      border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    .chatItem {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      width: 100%;
+      gap: 30px;
+
+      @media (min-width: 769px) {
+        gap: 50px;
+      }
+    }
+
+    .chatItem .deleteButton {
+      background: none;
+      border: none;
+      width: 50px;
+      height: 50px
+    }
+
+    .question {
+      padding: 10px 14px;
+      border-radius: 16px;
+      border-radius: 12px 12px 12px 4px;
+      background: var(--foreground);
+      color: var(--background);
+      font-size: 14px;
+
+      @media (min-width: 769px) {
+        font-size: 16px;
+      }
+    }
+
+    .answer {
+      margin: 12px 0;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      border-radius: 12px 12px 4px 12px;
+      font-size: 16px;
+      font-size: 14px;
+
+      @media (min-width: 769px) {
+        font-size: 16px;
+      }
+    }
+  }
+
+}

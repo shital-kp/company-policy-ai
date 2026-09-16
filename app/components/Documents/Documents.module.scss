@@ -1,6 +1,6 @@
 .documents {
-  min-height: calc(100vh - 56px);
-  padding: 0;
+  height: calc(100vh - 56px);
+  padding: 52px 0 20px;
   background: var(--background);
   color: var(--text-primary);
   transition:
@@ -27,15 +27,14 @@
 
 @media (min-width: 769px) {
   .documents {
-    min-height: calc(100vh - 64px);
-
+    height: calc(100vh - 64px);
     padding: 32px 40px;
   }
 
   .documentsHeader {
     margin-bottom: 28px;
 
-    h1 {
+    .title {
       font-size: 28px;
     }
 

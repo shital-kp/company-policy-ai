@@ -1,10 +1,10 @@
-import Image from "next/image";
+import ClientChat from "@/app/components/ClientChat/ClientChat";
 import styles from "./page.module.scss";
 
-export default function Home() {
+export default function ChatPage() {
   return (
-    <div className={styles.page}>
-
+    <div className={styles.mainContent}>
+      <ClientChat />
     </div>
   );
 }
