@@ -47,7 +47,7 @@ const LogInForm: React.FC = () => {
         return;
       }
 
-      router.push("/");
+      router.push("/chat");
       router.refresh();
     } catch (error) {
       console.error("Login error:", error);

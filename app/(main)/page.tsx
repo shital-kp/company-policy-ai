@@ -1,10 +1,5 @@
-import ClientChat from "@/app/components/ClientChat/ClientChat";
-import styles from "./page.module.scss";
+import { redirect } from "next/navigation";
 
-export default function ChatPage() {
-  return (
-    <div className={styles.mainContent}>
-      <ClientChat />
-    </div>
-  );
+export default function HomePage() {
+  redirect("/signin");
 }
