@@ -56,9 +56,7 @@ export default function ChatInput({
             className={styles.sendBtn}
           >
             {loading ? (
-              <span
-                className={styles.buttonSpinner}
-              ></span>
+              <span className={styles.buttonSpinner}></span>
             ) : (
               <ArrowUp />
             )}

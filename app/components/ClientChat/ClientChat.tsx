@@ -1,7 +1,5 @@
 "use client";
-
 import { useEffect, useRef, useState } from "react";
-
 import ChatInput from "@/app/components/ChatInput/ChatInput";
 import SampleQuestions from "../SampleQuestions/SampleQuestions";
 import HomeWelcomeSection from "../HomeWelcomeSection/HomeWelcomeSection";
@@ -46,7 +44,7 @@ export default function ChatClient({ welcome }: ChatClientProps) {
 
     const trimmedQuestion = question.trim();
 
-    console.log("🚀 Sending question:", trimmedQuestion);
+    // console.log("Sending question:", trimmedQuestion);
 
     // Hide sample questions
     setShowSampleQuestions(false);
@@ -71,7 +69,7 @@ export default function ChatClient({ welcome }: ChatClientProps) {
     const requestStart = performance.now();
 
     try {
-      console.log("📡 Calling /api/chat...");
+      // console.log("Calling /api/chat...");
 
       // Call Chat API
       const response = await fetch("/api/chat", {
@@ -84,11 +82,11 @@ export default function ChatClient({ welcome }: ChatClientProps) {
         }),
       });
 
-      console.log(
-        "📥 Response received:",
-        Math.round(performance.now() - requestStart),
-        "ms"
-      );
+      // console.log(
+      //   "Response received:",
+      //   Math.round(performance.now() - requestStart),
+      //   "ms"
+      // );
 
       // Check API response
       if (!response.ok) {
@@ -97,7 +95,7 @@ export default function ChatClient({ welcome }: ChatClientProps) {
 
       const data: ChatApiResponse = await response.json();
 
-      console.log("📥 Chat API response:", data);
+      // console.log("Chat API response:", data);
 
       // Get answer
       let answer = "";
@@ -121,11 +119,11 @@ export default function ChatClient({ welcome }: ChatClientProps) {
         },
       ]);
 
-      console.log(
-        "🏁 Finished:",
-        Math.round(performance.now() - requestStart),
-        "ms"
-      );
+      // console.log(
+      //   "Finished:",
+      //   Math.round(performance.now() - requestStart),
+      //   "ms"
+      // );
     } catch (error) {
       console.error("❌ Chat API error:", error);
 
@@ -162,7 +160,7 @@ export default function ChatClient({ welcome }: ChatClientProps) {
   return (
     <div className={styles.chatContainer}>
       {/* Welcome section */}
-      <HomeWelcomeSection />
+      {messages.length === 0 && <HomeWelcomeSection />}
 
       <div className={styles.scrollContent}>
         {/* Empty chat */}

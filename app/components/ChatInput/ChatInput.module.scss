@@ -54,6 +54,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
+  .buttonSpinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    animation: spin 0.7s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
 }
 
 .btnBlock .sendBtn>svg {
