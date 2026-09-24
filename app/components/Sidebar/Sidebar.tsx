@@ -27,8 +27,8 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
   // Check admin access
   // ==========================================
 
-  const isAdmin =
-    session?.user?.role === "HR_ADMIN";
+  const role = (session?.user as { role?: string } | undefined)?.role;
+  const isAdmin = role === "HR_ADMIN";
 
   // ==========================================
   // Sign out
@@ -74,7 +74,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
         {/* New Chat */}
 
         <a
-          href="/"
+          href="/chat"
           className={styles.newChat}
         >
           <img

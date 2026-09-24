@@ -1,4 +1,6 @@
+
 "use client";
+
 import { useEffect, useRef, useState } from "react";
 import ChatInput from "@/app/components/ChatInput/ChatInput";
 import SampleQuestions from "../SampleQuestions/SampleQuestions";
@@ -12,10 +14,6 @@ type Message = {
   content: string;
 };
 
-type ChatClientProps = {
-  welcome: React.ReactNode;
-};
-
 type ChatApiResponse = {
   success?: boolean;
   answer?: string;
@@ -23,7 +21,7 @@ type ChatApiResponse = {
   chatId?: string;
 };
 
-export default function ChatClient({ welcome }: ChatClientProps) {
+export default function ChatClient() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const [showSampleQuestions, setShowSampleQuestions] = useState(true);
@@ -44,9 +42,7 @@ export default function ChatClient({ welcome }: ChatClientProps) {
 
     const trimmedQuestion = question.trim();
 
-    // console.log("Sending question:", trimmedQuestion);
-
-    // Hide sample questions
+    // Hide sample questions after first question
     setShowSampleQuestions(false);
 
     // Create message IDs
@@ -66,11 +62,7 @@ export default function ChatClient({ welcome }: ChatClientProps) {
     // Start loading
     setLoading(true);
 
-    const requestStart = performance.now();
-
     try {
-      // console.log("Calling /api/chat...");
-
       // Call Chat API
       const response = await fetch("/api/chat", {
         method: "POST",
@@ -82,20 +74,12 @@ export default function ChatClient({ welcome }: ChatClientProps) {
         }),
       });
 
-      // console.log(
-      //   "Response received:",
-      //   Math.round(performance.now() - requestStart),
-      //   "ms"
-      // );
-
       // Check API response
       if (!response.ok) {
         throw new Error(`API error: ${response.status}`);
       }
 
       const data: ChatApiResponse = await response.json();
-
-      // console.log("Chat API response:", data);
 
       // Get answer
       let answer = "";
@@ -118,12 +102,6 @@ export default function ChatClient({ welcome }: ChatClientProps) {
           content: answer,
         },
       ]);
-
-      // console.log(
-      //   "Finished:",
-      //   Math.round(performance.now() - requestStart),
-      //   "ms"
-      // );
     } catch (error) {
       console.error("❌ Chat API error:", error);
 
@@ -163,43 +141,39 @@ export default function ChatClient({ welcome }: ChatClientProps) {
       {messages.length === 0 && <HomeWelcomeSection />}
 
       <div className={styles.scrollContent}>
-        {/* Empty chat */}
-        {messages.length === 0 ? (
-          welcome
-        ) : (
-          /* Chat messages */
-          <div className={styles.chatMessages}>
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={
-                  message.role === "user"
-                    ? styles.userMessage
-                    : styles.assistantMessage
-                }
-              >
-                <div className={styles.messageBubble}>
-                  <p>{message.content}</p>
-                </div>
+        {/* Chat messages */}
+        <div className={styles.chatMessages}>
+          {messages.map((message) => (
+            <div
+              key={message.id}
+              className={
+                message.role === "user"
+                  ? styles.userMessage
+                  : styles.assistantMessage
+              }
+            >
+              <div className={styles.messageBubble}>
+                <p>{message.content}</p>
               </div>
-            ))}
+            </div>
+          ))}
 
-            {/* Loading */}
-            {loading && (
-              <div className={styles.assistantMessage}>
-                <div className={styles.loadingMessage}>
-                  <span className={styles.spinner}></span>
+          {/* Loading */}
+          {loading && (
+            <div className={styles.assistantMessage}>
+              <div className={styles.loadingMessage}>
+                <span className={styles.spinner}></span>
 
-                  <span>
-                    Searching company policies...
-                  </span>
-                </div>
+                <span>
+                  Searching company policies...
+                </span>
               </div>
-            )}
+            </div>
+          )}
 
-            <div ref={bottomRef} />
-          </div>
-        )}
+          {/* Scroll target */}
+          <div ref={bottomRef} />
+        </div>
 
         {/* Sample questions */}
         {showSampleQuestions && (

@@ -80,7 +80,7 @@ export const {
 				token.id = user.id;
 				token.name = user.name;
 				token.email = user.email;
-				token.role = user.role;
+				token.role = (user as { role?: string }).role;
 			}
 
 			return token;
@@ -91,7 +91,8 @@ export const {
 				session.user.id = token.id as string;
 				session.user.name = token.name as string;
 				session.user.email = token.email as string;
-				session.user.role = token.role as string;
+				(session.user as { role?: string }).role =
+					token.role as string;
 			}
 
 			return session;

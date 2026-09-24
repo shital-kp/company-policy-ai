@@ -6,9 +6,25 @@
     max-height: 200px;
     overflow-x: auto;
     overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
     border: 1px solid var(--border);
     border-radius: 10px;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 10px;
+    }
+    
+    &::-webkit-scrollbar-thumb:hover {
+      background: var(--text-secondary);
+    }
   }
 
   .table {

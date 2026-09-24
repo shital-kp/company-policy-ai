@@ -1,6 +1,11 @@
+
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import styles from "./RecentChats.module.scss";
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -14,11 +19,15 @@ type ChatHistory = {
 };
 
 const RecentChats: React.FC = () => {
-  const [recentChats, setRecentChats] = useState<ChatHistory[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [recentChats, setRecentChats] = useState<
+    ChatHistory[]
+  >([]);
 
+  const [loading, setLoading] = useState(false);
   const [deleteMode, setDeleteMode] = useState(false);
-  const [selectedChats, setSelectedChats] = useState<string[]>([]);
+  const [selectedChats, setSelectedChats] = useState<
+    string[]
+  >([]);
   const [deleting, setDeleting] = useState(false);
 
   const router = useRouter();
@@ -27,21 +36,24 @@ const RecentChats: React.FC = () => {
   // Fetch chat history
   // ==========================================
 
-  const fetchChatHistory = async () => {
+  const fetchChatHistory = useCallback(async () => {
     try {
       setLoading(true);
 
-      const response = await fetch("/api/chat-history", {
-        cache: "no-store",
-      });
+      const response = await fetch(
+        "/api/chat-history",
+        {
+          cache: "no-store",
+        }
+      );
 
       if (!response.ok) {
-        throw new Error("Failed to fetch chat history");
+        throw new Error(
+          "Failed to fetch chat history"
+        );
       }
 
       const data = await response.json();
-
-      console.log("📚 Chat history:", data.chats);
 
       setRecentChats(data.chats || []);
     } catch (error) {
@@ -52,7 +64,7 @@ const RecentChats: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // ==========================================
   // Initial load
@@ -60,7 +72,7 @@ const RecentChats: React.FC = () => {
 
   useEffect(() => {
     fetchChatHistory();
-  }, []);
+  }, [fetchChatHistory]);
 
   // ==========================================
   // Select chat
@@ -116,11 +128,6 @@ const RecentChats: React.FC = () => {
     try {
       setDeleting(true);
 
-      console.log(
-        "🗑️ Deleting chats:",
-        selectedChats
-      );
-
       await Promise.all(
         selectedChats.map(async (chatId) => {
           const response = await fetch(
@@ -131,9 +138,10 @@ const RecentChats: React.FC = () => {
           );
 
           if (!response.ok) {
-            const data = await response.json().catch(
-              () => null
-            );
+            const data =
+              await response
+                .json()
+                .catch(() => null);
 
             throw new Error(
               data?.message ||
@@ -143,14 +151,10 @@ const RecentChats: React.FC = () => {
         })
       );
 
-      console.log(
-        "✅ Selected chats deleted"
-      );
-
       setSelectedChats([]);
       setDeleteMode(false);
 
-      // Reload from database
+      // Reload history after deletion
       await fetchChatHistory();
     } catch (error) {
       console.error(
@@ -182,17 +186,25 @@ const RecentChats: React.FC = () => {
             {!deleteMode ? (
               <button
                 type="button"
-                className={styles.deleteChatButton}
+                className={
+                  styles.deleteChatButton
+                }
                 onClick={handleDeleteMode}
               >
                 <Trash2 size={16} />
                 <span>Delete Chat</span>
               </button>
             ) : (
-              <div className={styles.deleteActions}>
+              <div
+                className={
+                  styles.deleteActions
+                }
+              >
                 <button
                   type="button"
-                  className={styles.cancelButton}
+                  className={
+                    styles.cancelButton
+                  }
                   onClick={handleDeleteMode}
                   disabled={deleting}
                 >
@@ -201,10 +213,15 @@ const RecentChats: React.FC = () => {
 
                 <button
                   type="button"
-                  className={styles.deleteSelectedButton}
-                  onClick={handleDeleteSelected}
+                  className={
+                    styles.deleteSelectedButton
+                  }
+                  onClick={
+                    handleDeleteSelected
+                  }
                   disabled={
-                    selectedChats.length === 0 || deleting
+                    selectedChats.length ===
+                    0 || deleting
                   }
                 >
                   <Trash2 size={16} />
@@ -212,7 +229,8 @@ const RecentChats: React.FC = () => {
                   <span>
                     {deleting
                       ? "Deleting..."
-                      : `Delete${selectedChats.length > 0
+                      : `Delete${selectedChats.length >
+                        0
                         ? ` (${selectedChats.length})`
                         : ""
                       }`}
@@ -256,8 +274,12 @@ const RecentChats: React.FC = () => {
                 />
               )}
 
-              <div className={styles.chatContent}>
-                <p className={styles.question}>
+              <div
+                className={styles.chatContent}
+              >
+                <p
+                  className={styles.question}
+                >
                   {chat.question}
                 </p>
 
@@ -274,3 +296,4 @@ const RecentChats: React.FC = () => {
 };
 
 export default RecentChats;
+

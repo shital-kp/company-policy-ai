@@ -1,63 +1,48 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
-datasource db {
-  provider   = "postgresql"
-  extensions = [pgvector(map: "vector")]
-}
-
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["postgresqlExtensions"]
 }
 
-enum Role {
-  EMPLOYEE
-  HR_ADMIN
-} 
-
-enum DocumentStatus {
-  PROCESSING
-  READY
-  FAILED
+datasource db {
+  provider   = "postgresql"
+  extensions = [vector]
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  name      String
-  role      Role     @default(EMPLOYEE)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  chats     Chat[]
+  id                  String               @id @default(uuid())
+  email               String               @unique
+  password            String
+  name                String
+  role                Role                 @default(EMPLOYEE)
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  chats               Chat[]
+  passwordResetTokens PasswordResetToken[]
 }
 
 model Document {
-  id          String          @id @default(uuid())
-  title       String
-  fileName    String
-  fileUrl     String
-  fileType    String
-  fileSize    Int
-  uploadedBy  String
-  fileHash    String          @unique
-  status      DocumentStatus  @default(PROCESSING)
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
-  chunks      DocumentChunk[]
+  id         String          @id @default(uuid())
+  title      String
+  fileName   String
+  fileUrl    String
+  fileType   String
+  fileSize   Int
+  uploadedBy String
+  status     DocumentStatus  @default(PROCESSING)
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+  fileHash   String          @unique
+  chunks     DocumentChunk[]
 }
 
 model DocumentChunk {
   id         String                 @id @default(uuid())
   documentId String
-  document   Document               @relation(fields: [documentId], references: [id], onDelete: Cascade)
   content    String
   embedding  Unsupported("vector")?
   metadata   Json?
   createdAt  DateTime               @default(now())
+  document   Document               @relation(fields: [documentId], references: [id], onDelete: Cascade)
 }
 
 model Chat {
@@ -66,9 +51,8 @@ model Chat {
   title     String?
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
-
-  messages  ChatMessage[]
   user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages  ChatMessage[]
 
   @@index([userId])
 }
@@ -79,8 +63,29 @@ model ChatMessage {
   role      String
   content   String
   createdAt DateTime @default(now())
-
   chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
 
   @@index([chatId])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+enum Role {
+  EMPLOYEE
+  HR_ADMIN
+}
+
+enum DocumentStatus {
+  PROCESSING
+  READY
+  FAILED
 }

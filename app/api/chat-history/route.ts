@@ -22,25 +22,39 @@ export async function GET() {
 
     const userId = session.user.id;
 
-    console.log("Chat history user:", userId);
-
     // ==========================================
     // 2. Get chats for this user only
+    //    Fetch only the data required by the UI
     // ==========================================
 
     const chats = await prisma.chat.findMany({
       where: {
-        userId: userId,
+        userId,
       },
 
       orderBy: {
         updatedAt: "desc",
       },
 
-      include: {
+      select: {
+        id: true,
+        title: true,
+        updatedAt: true,
+
         messages: {
+          where: {
+            role: {
+              in: ["USER", "ASSISTANT"],
+            },
+          },
+
           orderBy: {
             createdAt: "asc",
+          },
+
+          select: {
+            role: true,
+            content: true,
           },
         },
       },
@@ -68,11 +82,6 @@ export async function GET() {
       };
     });
 
-    console.log(
-      "Chat history count:",
-      history.length
-    );
-
     // ==========================================
     // 4. Return history
     // ==========================================
@@ -89,10 +98,7 @@ export async function GET() {
       }
     );
   } catch (error) {
-    console.error(
-      "❌ Chat history error:",
-      error
-    );
+    console.error("❌ Chat history error:", error);
 
     return NextResponse.json(
       {
@@ -106,3 +112,4 @@ export async function GET() {
     );
   }
 }
+

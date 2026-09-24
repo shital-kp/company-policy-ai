@@ -4,7 +4,7 @@ import { Trash2, Search, X } from "lucide-react";
 import styles from "./DocumentList.module.scss";
 
 type DocumentItem = {
-  id: number;
+  id: string;
   name: string;
   size: string;
   status: string;
@@ -13,7 +13,7 @@ type DocumentItem = {
 
 type DocumentListProps = {
   documents: DocumentItem[];
-  onDelete: (id: number) => void;
+  onDelete: (id: string) => void;
 };
 
 const DocumentList: React.FC<DocumentListProps> = ({

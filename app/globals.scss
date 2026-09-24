@@ -12,6 +12,8 @@
   --success-text: #15803d;
   --danger: #dc2626;
   --input-background: #ffffff;
+
+  color-scheme: light;
 }
 
 [data-theme="dark"] {
@@ -28,6 +30,8 @@
   --success-text: #6ee7b7;
   --danger: #f87171;
   --input-background: #171717;
+
+  color-scheme: dark;
 }
 
 html {
@@ -45,9 +49,11 @@ body {
   filter: brightness(0) invert(1);
 }
 
-[data-theme="dark"] img, [data-theme="dark"] .icon {
+[data-theme="dark"] img,
+[data-theme="dark"] .icon {
   filter: brightness(0) invert(1);
 }
+
 
 .container {
   width: 100%;
@@ -80,10 +86,4 @@ main {
 a {
   color: inherit;
   text-decoration: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
 }
