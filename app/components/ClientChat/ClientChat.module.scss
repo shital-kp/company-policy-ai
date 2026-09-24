@@ -13,7 +13,7 @@
     width: 100%;
     height: 100%;
     overflow-y: auto;
-    // padding-bottom: 140px;
+    padding: 40px 0 90px;
 }
 
 .chatMessages {
@@ -59,8 +59,8 @@
 
 .userMessage .messageBubble {
     border-radius: 12px 12px 4px 12px;
-    background: var(--surface);
-    color: var(--text-primary);
+    background: var(--foreground);
+    color: var(--background);
 }
 
 .assistantMessage .messageBubble {
