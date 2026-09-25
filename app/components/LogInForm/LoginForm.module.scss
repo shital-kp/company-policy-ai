@@ -69,6 +69,16 @@
       color: var(--foreground);
       font-weight: 600;
     }
+
+    .error {
+      margin: -4px 0 5px;
+      padding: 10px 12px;
+      width: 100%;
+      border-radius: 6px;
+      background: var(--success-background);
+      font-size: 13px;
+      color: var(--danger);
+    }
   }
 
   .passwordText {
