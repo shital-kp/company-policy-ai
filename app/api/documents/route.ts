@@ -39,6 +39,7 @@ export async function POST(req: Request) {
 
     const file = formData.get("file");
 
+
     if (!(file instanceof File)) {
       return NextResponse.json(
         {
@@ -49,7 +50,17 @@ export async function POST(req: Request) {
       );
     }
 
+    const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500 MB
 
+    if (file.size > MAX_FILE_SIZE) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "File size must not exceed 500 MB",
+        },
+        { status: 400 }
+      );
+    }
 
     // console.log("File name:", file.name);
     // console.log("File size:", file.size);
