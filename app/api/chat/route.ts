@@ -6,13 +6,8 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 
 export async function POST(req: Request) {
-  const start = Date.now();
-
   try {
-    // ==========================================
     // 1. Get logged-in user
-    // ==========================================
-
     const session = await auth();
 
     if (!session?.user?.id) {
@@ -27,12 +22,7 @@ export async function POST(req: Request) {
 
     const userId = session.user.id;
 
-    console.log("👤 Logged-in user:", userId);
-
-    // ==========================================
     // 2. Read request
-    // ==========================================
-
     const body = await req.json();
 
     const question = body.question?.trim();
@@ -48,23 +38,10 @@ export async function POST(req: Request) {
       );
     }
 
-    console.log("\n==========================================");
-    console.log("⏱️ Question:", question);
-    console.log("💬 Chat ID:", chatId || "NEW CHAT");
-    console.log("👤 User ID:", userId);
-    console.log("==========================================");
-
-    // ==========================================
     // 3. Find existing chat OR create new chat
-    // ==========================================
-
     let chat;
 
     if (chatId) {
-      // ----------------------------------------
-      // Existing conversation
-      // ----------------------------------------
-
       chat = await prisma.chat.findFirst({
         where: {
           id: chatId,
@@ -81,13 +58,7 @@ export async function POST(req: Request) {
           { status: 404 }
         );
       }
-
-      console.log("💬 Existing chat:", chat.id);
     } else {
-      // ----------------------------------------
-      // New conversation
-      // ----------------------------------------
-
       chat = await prisma.chat.create({
         data: {
           userId: userId,
@@ -97,17 +68,9 @@ export async function POST(req: Request) {
               : question,
         },
       });
-
-      console.log(
-        "🆕 New chat created:",
-        chat.id
-      );
     }
 
-    // ==========================================
     // 4. Save USER message
-    // ==========================================
-
     await prisma.chatMessage.create({
       data: {
         chatId: chat.id,
@@ -116,68 +79,13 @@ export async function POST(req: Request) {
       },
     });
 
-    console.log("💾 User question saved");
-
-    // ==========================================
     // 5. Vector search
-    // ==========================================
+    const chunks = await searchSimilarChunks(question, 1);
 
-    const searchStart = Date.now();
-
-    const chunks = await searchSimilarChunks(
-      question,
-      1
-    );
-
-    const searchTime = Date.now() - searchStart;
-
-    console.log(
-      "⏱️ Vector search:",
-      searchTime,
-      "ms"
-    );
-
-    console.log(
-      "QUESTION:",
-      question
-    );
-
-    console.log(
-      "CHUNKS FOUND:",
-      chunks.length
-    );
-
-    // ==========================================
-    // 6. Log retrieved chunks
-    // ==========================================
-
-    chunks.forEach((chunk, index) => {
-      console.log(
-        `\n--- CHUNK ${index + 1} ---`
-      );
-
-      console.log(
-        "Distance:",
-        chunk.distance
-      );
-
-      console.log(
-        "Content:",
-        chunk.content
-      );
-    });
-
-    // ==========================================
-    // 7. No relevant policy found
-    // ==========================================
-
+    // 6. No relevant policy found
     if (chunks.length === 0) {
       const answer =
         "I could not find this information in the available company policies.";
-
-      console.log(
-        "⚠️ No relevant policy chunks found"
-      );
 
       await prisma.chatMessage.create({
         data: {
@@ -196,16 +104,6 @@ export async function POST(req: Request) {
         },
       });
 
-      console.log(
-        "💾 Assistant answer saved"
-      );
-
-      console.log(
-        "⏱️ TOTAL:",
-        Date.now() - start,
-        "ms"
-      );
-
       return NextResponse.json({
         success: true,
         chatId: chat.id,
@@ -215,10 +113,7 @@ export async function POST(req: Request) {
       });
     }
 
-    // ==========================================
-    // 8. Build context
-    // ==========================================
-
+    // 7. Build context
     const MAX_CONTEXT_CHARS = 1000;
 
     const context = chunks
@@ -229,45 +124,30 @@ ${chunk.content}`;
       .join("\n\n")
       .slice(0, MAX_CONTEXT_CHARS);
 
-    console.log(
-      "\n========== CONTEXT SENT TO QWEN =========="
-    );
-
-    console.log(context);
-
-    console.log(
-      "=========================================="
-    );
-
-    // ==========================================
-    // 9. Generate answer using Qwen
-    // ==========================================
-
-    const aiStart = Date.now();
-
+    // 8. Generate answer using Qwen
+    // const aiStart = Date.now();
     const answer = await generateAnswer({
       question,
       context,
     });
 
-    const generationTime =
-      Date.now() - aiStart;
 
-    console.log(
-      "⏱️ Qwen generation:",
-      generationTime,
-      "ms"
-    );
+    // const generationTime =
+    //   Date.now() - aiStart;
 
-    console.log(
-      "QWEN ANSWER:",
-      answer
-    );
+    // console.log(
+    //   "⏱️ Qwen generation:",
+    //   generationTime,
+    //   "ms"
+    // );
 
-    // ==========================================
-    // 10. Save ASSISTANT message
-    // ==========================================
+    // console.log(
+    //   "QWEN ANSWER:",
+    //   answer
+    // );
 
+
+    // 9. Save ASSISTANT message
     await prisma.chatMessage.create({
       data: {
         chatId: chat.id,
@@ -276,14 +156,7 @@ ${chunk.content}`;
       },
     });
 
-    console.log(
-      "💾 Assistant answer saved"
-    );
-
-    // ==========================================
-    // 11. Update chat timestamp
-    // ==========================================
-
+    // 10. Update chat timestamp
     await prisma.chat.update({
       where: {
         id: chat.id,
@@ -293,20 +166,7 @@ ${chunk.content}`;
       },
     });
 
-    // ==========================================
-    // 12. Total time
-    // ==========================================
-
-    console.log(
-      "⏱️ TOTAL:",
-      Date.now() - start,
-      "ms"
-    );
-
-    // ==========================================
-    // 13. Return response
-    // ==========================================
-
+    // 11. Return response
     return NextResponse.json({
       success: true,
       chatId: chat.id,
@@ -319,10 +179,7 @@ ${chunk.content}`;
       })),
     });
   } catch (error) {
-    console.error(
-      "❌ POST /api/chat error:",
-      error
-    );
+    console.error("POST /api/chat error:", error);
 
     return NextResponse.json(
       {
@@ -336,3 +193,4 @@ ${chunk.content}`;
     );
   }
 }
+

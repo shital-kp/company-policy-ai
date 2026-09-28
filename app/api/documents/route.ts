@@ -51,9 +51,9 @@ export async function POST(req: Request) {
 
 
 
-    console.log("File name:", file.name);
-    console.log("File size:", file.size);
-    console.log("File type:", file.type);
+    // console.log("File name:", file.name);
+    // console.log("File size:", file.size);
+    // console.log("File type:", file.type);
 
     // --------------------------------------------------
     // 2. Convert file to Buffer
@@ -244,9 +244,9 @@ export async function POST(req: Request) {
   `;
     }
 
-    console.log(
-      `Saved ${chunks.length} chunks with embeddings for document ${document.id}`
-    );
+    // console.log(
+    //   `Saved ${chunks.length} chunks with embeddings for document ${document.id}`
+    // );
 
     // --------------------------------------------------
     // 9. Return response
