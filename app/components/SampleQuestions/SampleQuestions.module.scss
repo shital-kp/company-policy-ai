@@ -1,0 +1,33 @@
+.SampleQuestions {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px 0;
+
+    @media (min-width: 769px) {
+        padding: 40px 80px 20px;
+        gap: 40px;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .questionBtn {
+        width: 100%;
+        border: 1px solid var(--border);
+        background: none;
+        border-radius: 8px;
+        text-align: left;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        padding: 12px 8px;
+        cursor: pointer;
+
+        @media (min-width: 769px) {
+            padding: 30px 16px;
+            flex: 0 0 calc(50% - 20px);
+            font-size: 20px;
+        }
+    }
+}

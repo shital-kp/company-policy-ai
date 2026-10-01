@@ -15,7 +15,8 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const handleSubmit = (
+
+  const handleSubmit = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
@@ -31,15 +32,44 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({
       return;
     }
 
-    // Loading state
-    setLoading(true);
+    try {
+      // Loading state
+      setLoading(true);
 
-    // Temporary frontend simulation
-    setTimeout(() => {
-      setLoading(false);
+      const response = await fetch("/api/forgot-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email.toLowerCase(),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(
+          data.message || "Something went wrong. Please try again."
+        );
+        return;
+      }
+
+      console.log("Forgot password response:", data);
+
       setSuccess(true);
-    }, 1500);
+    } catch (error) {
+      console.error("Forgot password error:", error);
+
+      setError(
+        "Unable to process your request. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
+
+
 
   return (
     <div

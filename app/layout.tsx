@@ -1,5 +1,5 @@
 import "./globals.scss";
-import ThemeProvider from "@/app/components/ThemeProvider/ThemeProvider";
+import { ThemeProvider } from "@/app/components/ThemeProvider/ThemeProvider";
 import Header from "@/app/components/Header/Header";
 import { Inter } from "next/font/google";
 

@@ -1,0 +1,11 @@
+.mainContent {
+    margin-left: 0;
+    padding: 20px 15px;
+    height: 100vh;
+    overflow: hidden;
+
+    @media (min-width: 769px) {
+        margin-left: 240px;
+        padding: 60px 30px 30px;
+    }
+}

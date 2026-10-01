@@ -8,6 +8,12 @@
   background: var(--surface);
   // border-bottom: 1px solid var(--border);
   color: var(--text-primary);
+  position: fixed;
+  width: 100%;
+  z-index: 1111;
+  top: 0;
+
+  // @media (min-width: 769px) {}
 }
 
 .sidebarBtn {
@@ -52,7 +58,7 @@
 @media (min-width: 769px) {
   .header {
     height: 64px;
-    padding: 15px 24px 0;
+    padding: 15px 24px;
   }
 
   .showSidebar {

@@ -1,0 +1,101 @@
+.chatInput {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  padding: 12px;
+  box-sizing: border-box;
+  background: var(--background);
+  backdrop-filter: blur(10px);
+
+  @media (min-width: 768px) {
+    left: 230px;
+    right: 0;
+    padding: 16px 0 60px;
+  }
+}
+
+.chatInput>* {
+  width: 100%;
+  max-width: 768px;
+}
+
+
+.inputBlock {
+  width: 100%;
+  max-width: 1060px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  background: var(--input-background);
+  border-radius: 18px;
+  padding: 6px 8px 6px 16px;
+
+  @media (min-width: 768px) {
+    padding: 15px 10px 15px 16px;
+  }
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 16px;
+  padding: 10px 0;
+  // background: var(--input-background);
+  color: var(--text-primary);
+  // border: 1px solid var(--border);
+
+  &::placeholder {
+    color: var(--text-secondary);
+  }
+}
+
+.btnBlock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .buttonSpinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #747679;
+    border-top-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    animation: spin 0.7s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+.btnBlock .sendBtn>svg {
+  stroke: var(--foreground);
+}
+
+.sendBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.sendBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

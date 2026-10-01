@@ -1,40 +1,62 @@
-'use client';
+
+"use client";
+
 import React from "react";
+import { useSession, signOut } from "next-auth/react";
+
 import styles from "./Sidebar.module.scss";
 import NewChatIcon from "@/public/new-chat-icon.png";
 import DocumentIcon from "@/public/document-icon.png";
-import profileIcon from "@/public/profile-icon.png";
 import ThemeToggle from "../ThemeToggle/ThemeToggle";
 import SignOutIcon from "@/public/log-out-icon.png";
+import chatIcon from "@/public/chat-history.png";
 
 type SidebarProps = {
   onClose?: () => void;
 };
 
 const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
-  const [isSettingOpen, setIsSettingOpen] = React.useState(false);
-  const [isDocumentOpen, setIsDocumentOpen] = React.useState(true);
+  const [isSettingOpen, setIsSettingOpen] =
+    React.useState(false);
 
-  const handleSignOut = () => {
-    localStorage.removeItem("user");
+  const { data: session, status } = useSession();
 
-    window.location.href = "/signin";
+  const isLoggedIn = status === "authenticated";
+
+  // ==========================================
+  // Check admin access
+  // ==========================================
+
+  const role = (session?.user as { role?: string } | undefined)?.role;
+  const isAdmin = role === "HR_ADMIN";
+
+  // ==========================================
+  // Sign out
+  // ==========================================
+
+  const handleSignOut = async () => {
+    await signOut({
+      callbackUrl: "/signin",
+    });
   };
+
+  // ==========================================
+  // Profile popup
+  // ==========================================
 
   const handleProfileBtn = () => {
-    setIsSettingOpen(!isSettingOpen);
+    setIsSettingOpen((prev) => !prev);
   };
-
-  const documentShow = () => {
-    setIsDocumentOpen(!isDocumentOpen);
-  };
-
 
   return (
     <div className={styles.sidebar}>
+      {/* ======================================
+          Sidebar Header
+      ====================================== */}
 
       <div className={styles.sidebarTitle}>
         AI BOT
+
         <button
           className={styles.closeButton}
           onClick={onClose}
@@ -44,80 +66,122 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
         </button>
       </div>
 
-      <div className={styles.sidebarDetails}>
+      {/* ======================================
+          Sidebar Menu
+      ====================================== */}
 
+      <div className={styles.sidebarDetails}>
         {/* New Chat */}
-        <a href="/" className={styles.newChat}>
+
+        <a
+          href="/chat"
+          className={styles.newChat}
+        >
           <img
             src={NewChatIcon.src}
             width={25}
             height={25}
             alt="new-chat-icon"
           />
+
           <span>New Chat</span>
         </a>
 
-        {/* Documents */}
-        <div
-          className={styles.documentManagement}
-          onClick={documentShow}
-        >
-          <img
-            src={DocumentIcon.src}
-            width={25}
-            height={25}
-            alt="document-icon"
-          />
+        {/* Documents
+            Only HR_ADMIN can see this */}
 
-          <a href="/admin">Documents</a>
-        </div>
+        {isAdmin && (
+          <a
+            href="/admin"
+            className={styles.documentManagement}
+          >
+            <img
+              src={DocumentIcon.src}
+              width={25}
+              height={25}
+              alt="document-icon"
+            />
 
-      </div>
-
-      <div className={styles.profileAndToggle}>
-
-        {isSettingOpen && (
-          <div className={styles.themeToggleBtn}>
-            <div className={styles.togglePopup}>
-
-              <div className={styles.theme}>
-                <span>Theme</span>
-                <ThemeToggle />
-              </div>
-
-              <button className={styles.signout} onClick={handleSignOut}>
-                <img
-                  src={SignOutIcon.src}
-                  width={20}
-                  height={20}
-                  alt="log-out-icon"
-                />
-
-                <span>Sign Out</span>
-              </button>
-
-            </div>
-          </div>
+            Documents
+          </a>
         )}
 
-        <div
-          className={styles.userProfile}
-          onClick={handleProfileBtn}
+        {/* Chat History */}
+
+        <a
+          href="/chat-history"
+          className={styles.recentBtn}
         >
-          {/* <img
-            src={profileIcon.src}
+          <img
+            src={chatIcon.src}
             width={25}
             height={25}
-            alt="profile"
-          /> */}
+            alt="chat history icon"
+            className={`companyLogo ${styles.logo}`}
+          />
 
-          <span className={styles.userName}>
-            User Profile
-          </span>
-        </div>
+          Chat History
+        </a>
       </div>
+
+      {/* ======================================
+          User Profile
+          Show only when logged in
+      ====================================== */}
+
+      {isLoggedIn && (
+        <div className={styles.profileAndToggle}>
+          {/* Profile Popup */}
+
+          {isSettingOpen && (
+            <div
+              className={styles.themeToggleBtn}
+            >
+              <div
+                className={styles.togglePopup}
+              >
+                {/* Theme */}
+
+                <div className={styles.theme}>
+                  <span>Theme</span>
+
+                  <ThemeToggle />
+                </div>
+
+                {/* Sign Out */}
+
+                <button
+                  className={styles.signout}
+                  onClick={handleSignOut}
+                >
+                  <img
+                    src={SignOutIcon.src}
+                    width={20}
+                    height={20}
+                    alt="log-out-icon"
+                  />
+
+                  <span>Sign Out</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* User Profile */}
+
+          <div
+            className={styles.userProfile}
+            onClick={handleProfileBtn}
+          >
+            <span className={styles.userName}>
+              User Profile
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default Sidebar;
+
