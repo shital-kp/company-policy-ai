@@ -74,6 +74,7 @@ export default function ChatClient() {
         }),
       });
 
+    //console.log("✅ Chat API response:", response);
       // Check API response
       if (!response.ok) {
         throw new Error(`API error: ${response.status}`);

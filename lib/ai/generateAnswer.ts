@@ -2,7 +2,7 @@ const OLLAMA_URL =
   process.env.OLLAMA_BASE_URL ||
   "http://localhost:11434";
 
-const CHAT_MODEL = "qwen2.5:1.5b";
+const CHAT_MODEL = process.env.CHAT_MODEL;
 
 type GenerateAnswerParams = {
   question: string;
