@@ -45,11 +45,9 @@ next-env.d.ts
 
 # Operating System files
 .DS_Store
-Thumbs.dbss
+Thumbs.db
 
 # Prisma
-/prisma/migrations/*_*/
-!/prisma/migrations/
 dev.db
 dev.db-journal
 /app/generated/prisma
